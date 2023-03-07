@@ -2,10 +2,12 @@ import React from "react";
 
 const App = () => {
   return (
-    <div className="md:container mx-auto flex items-center justify-center h-screen bg-gray-200">
-      <p className=" text-indigo-400 text-2xl">
-        Hello world, I'm Bee.
-      </p>
+    <div className="flex bg-primary min-h-[100vh]">
+      <div className="m-auto">
+        <a href="http://localhost:3000" className="btn btn-lg btn-ghost text-base-100">
+          Start
+        </a>
+      </div>
     </div>
   );
 };
