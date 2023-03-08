@@ -1,8 +1,14 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("__BEE__", {
-  client: 'desktop',
-  version: '0.0.1',
+  client: {
+    platform: "desktop",
+    version: require("../package.json").version,
+  },
+  torrent: {
+    start: (infoHash: string, fileIdx: number) =>
+      ipcRenderer.invoke("start-torrent", infoHash, fileIdx),
+  },
 });
