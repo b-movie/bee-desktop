@@ -15,7 +15,9 @@ export const mainConfig: Configuration = {
   resolve: {
     extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".json"],
   },
-  experiments: {
-    topLevelAwait: true,
-  },
+  externals: [
+    {
+      "utp-native": "commonjs utp-native",
+    },
+  ],
 };
