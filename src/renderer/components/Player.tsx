@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 
-const Player = (props: { meta: Meta; torrent: Torrent }) => {
-  const { meta, torrent } = props;
+const Player = (props: { meta: Meta }) => {
+  const { meta } = props;
+  const [torrent, setTorrent] = useState<Torrent>(null);
+
+  useEffect(() => {
+    window.__BEE__.torrent.onStateUpdated((_: any, info: TorrentClientInfo) => {
+      const t = info.torrents.find(
+        (_torrent) => _torrent.infoHash === meta?.infoHash
+      );
+      setTorrent(t || info.torrents[0]);
+    });
+  });
 
   return (
     <div

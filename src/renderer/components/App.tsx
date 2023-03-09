@@ -19,19 +19,14 @@ const Welcome = () => {
 
 const App = () => {
   const [meta, setMeta] = useState<Meta>(null);
-  const [torrent, setTorrent] = useState<Torrent>(null);
 
   useEffect(() => {
-    window.__BEE__.torrent.onStateUpdated((_: any, info: TorrentClientInfo, meta: Meta) => {
-      setMeta(meta);
-      const t = info.torrents.find(
-        (_torrent) => _torrent.infoHash === meta.infoHash
-      );
-      setTorrent(t || info.torrents[0]);
+    window.__BEE__.store.get("playing").then((playing: Meta) => {
+      setMeta(playing);
     });
-  });
+  }, []);
 
-  return <>{meta ? <Player meta={meta} torrent={torrent} /> : <Welcome />}</>;
+  return <>{meta ? <Player meta={meta} /> : <Welcome />}</>;
 };
 
 export default App;

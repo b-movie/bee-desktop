@@ -1,6 +1,7 @@
 import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import { torrent } from "rum-torrent";
 import log from "electron-log";
+import Store from "electron-store";
 
 // https://github.com/webtorrent/create-torrent/blob/master/index.js#L16
 const announceList = [
@@ -13,6 +14,8 @@ const announceList = [
   ["wss://tracker.openwebtorrent.com"],
 ];
 
+const store = new Store();
+
 export class Torrent {
   public client: any;
 
@@ -20,6 +23,7 @@ export class Torrent {
 
   async startTorrent(event: IpcMainInvokeEvent, meta: Meta, ..._args: any[]) {
     log.debug("start-torrent", meta);
+    store.set('playing', meta);
 
     await torrent.init({
       callback: (state: any) => {
@@ -69,11 +73,7 @@ export class Torrent {
     });
   }
 
-  stopTorrent(
-    _event: IpcMainInvokeEvent,
-    infoHash: string,
-    ..._args: any[]
-  ) {
+  stopTorrent(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
     log.debug("stop-torrent", infoHash);
 
     const t = this.client.torrents.find((torrent: any) => {

@@ -48,6 +48,7 @@
     "daisyui": "^2.51.3",
     "electron-log": "^5.0.0-beta.19",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rum-torrent": "^0.1.15"

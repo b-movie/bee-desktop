@@ -7,6 +7,9 @@ contextBridge.exposeInMainWorld("__BEE__", {
     platform: "desktop",
     version: require("../package.json").version,
   },
+  store: {
+    get: (key: string) => ipcRenderer.invoke("store-get", key),
+  },
   torrent: {
     start: (meta: Meta) => ipcRenderer.invoke("start-torrent", meta),
     stop: (infoHash: string) => ipcRenderer.invoke("stop-torrent", infoHash),
