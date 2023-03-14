@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react";
-import Player from "./Player";
-
 declare global {
   interface Window {
     __BEE__: any;
@@ -18,15 +15,7 @@ const Welcome = () => {
 };
 
 const App = () => {
-  const [meta, setMeta] = useState<Meta>(null);
-
-  useEffect(() => {
-    window.__BEE__.store.get("playing").then((playing: Meta) => {
-      setMeta(playing);
-    });
-  }, []);
-
-  return <>{meta ? <Player meta={meta} /> : <Welcome />}</>;
+  return <Welcome />;
 };
 
 export default App;

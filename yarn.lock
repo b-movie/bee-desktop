@@ -1308,9 +1308,9 @@ aws4@^1.8.0:
   integrity sha512-NmWvPnx0F1SfrQbYwOi7OeaNGokp9XhzNioJ/CSBs8Qa4vxug81mhJEAVZwxXuBmYB5KDRfMq/F3RR0BIU7sWg==
 
 b4a@^1.3.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/b4a/-/b4a-1.6.1.tgz#9effac93a469a868d024e16fd77162c653544cbd"
-  integrity sha512-AsKjNhz72yxteo/0EtQEiwkMUgk/tGmycXlbG4g3Ard2/ULtNLUykGOkeK0egmN27h0xMAhb76jYccW+XTBExA==
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/b4a/-/b4a-1.6.2.tgz#d3dca0ac7da794aa13093e92dd57cfe61d58b07e"
+  integrity sha512-YFqjbZ8iqX/wWJVmF1SSOB5TYDwsPd/sZzhSdu2PskElf55PjEe+0MhsEPgoa5eTK1VS/WqJMz9qwIFwZta+3g==
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -4974,9 +4974,9 @@ node-fetch@^2.6.7:
     whatwg-url "^5.0.0"
 
 node-fetch@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.3.0.tgz#37e71db4ecc257057af828d523a7243d651d91e4"
-  integrity sha512-BKwRP/O0UvoMKp7GNdwPlObhYGB5DQqwhEDQlNKuoqwVYSxkSZCSbHjnFFmUEtwSKRPU4kNK8PbDYYitwaE3QA==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.3.1.tgz#b3eea7b54b3a48020e46f4f88b9c5a7430d20b2e"
+  integrity sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==
   dependencies:
     data-uri-to-buffer "^4.0.0"
     fetch-blob "^3.1.4"
@@ -5757,7 +5757,16 @@ readable-stream@^2.0.1:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^3.0.2, readable-stream@^3.0.6, readable-stream@^3.4.0, readable-stream@^3.6.0:
+readable-stream@^3.0.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.2.tgz#56a9b36ea965c00c5a93ef31eb111a0f11056967"
+  integrity sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
+
+readable-stream@^3.0.6, readable-stream@^3.4.0, readable-stream@^3.6.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.1.tgz#f9f9b5f536920253b3d26e7660e7da4ccff9bb62"
   integrity sha512-+rQmrWMYGA90yenhTYsLWAsLsqVC8osOw6PKE1HDYiO0gdPeKe/xDHNzIAIn4C91YQ6oenEhfYqqc1883qHbjQ==
@@ -5970,10 +5979,10 @@ roarr@^2.15.3:
     semver-compare "^1.0.0"
     sprintf-js "^1.1.2"
 
-rum-torrent@^0.1.15:
-  version "0.1.15"
-  resolved "https://registry.yarnpkg.com/rum-torrent/-/rum-torrent-0.1.15.tgz#12751ad3603750f7673fa986997e566b7f26b35b"
-  integrity sha512-zut88xYnqvOPIlYXieMH0R8KiMGqYtIY25QqZPOcXgoBS/xzJM/ZzQUBhrzrDU4LFB/up6UT3+9N+XqWIRNK6g==
+rum-torrent@^0.1.16:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/rum-torrent/-/rum-torrent-0.1.16.tgz#ac66539e9c37fbe8b482882a1f99c72cc54b9208"
+  integrity sha512-8BiQpWPCvt/ERc4V3vSyAVT5vXWLgm+mOITtGz/goYNtWOQvXiuO6NG1Ym0zSTjx0uynZ25KSy7LtpASjZwc6A==
   dependencies:
     bittorrent-peerid "github:Leask/bittorrent-peerid"
     bittorrent-tracker "github:Leask/bittorrent-tracker"
@@ -7003,9 +7012,9 @@ utila@~0.4:
   integrity sha512-Z0DbgELS9/L/75wZbro8xAnT50pBVFQZ+hUEueGDU5FN51YSCYM+jdxsfCiHjwNP/4LCDD0i/graKpeBnOXKRA==
 
 utilitas@^1992.3.31:
-  version "1992.3.31"
-  resolved "https://registry.yarnpkg.com/utilitas/-/utilitas-1992.3.31.tgz#76c193d7ca98b484807bfa4203da30233bb17d58"
-  integrity sha512-2hH36tLRWjbwZLJ5xlKqh+unsatwv4uJlylTzdhwOYCCP6ueoREv+66JoVf389MyxgWyaHAKMq2VKChDKrvHDA==
+  version "1992.3.43"
+  resolved "https://registry.yarnpkg.com/utilitas/-/utilitas-1992.3.43.tgz#4351952a32cbb7d5b3985714abd79353f0de6414"
+  integrity sha512-CVoAXoh4YmrBjr+l9qKUjrfUFJNOi7em7eWzgpFPu4KY6+koTG1GlEs0aAJkm+Ab1S4nNFStSy1hrzm0QfZVTg==
   dependencies:
     file-type "^18.2.1"
     mathjs "^11.6.0"
@@ -7351,7 +7360,12 @@ ws@^7.4.2, ws@^7.4.6:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
 
-ws@^8.0.0, ws@^8.4.2:
+ws@^8.0.0:
+  version "8.13.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.13.0.tgz#9a9fb92f93cf41512a0735c8f4dd09b8a1211cd0"
+  integrity sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==
+
+ws@^8.4.2:
   version "8.12.1"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.12.1.tgz#c51e583d79140b5e42e39be48c934131942d4a8f"
   integrity sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==

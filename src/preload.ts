@@ -11,12 +11,15 @@ contextBridge.exposeInMainWorld("__BEE__", {
     get: (key: string) => ipcRenderer.invoke("store-get", key),
   },
   torrent: {
-    start: (meta: Meta) => ipcRenderer.invoke("start-torrent", meta),
-    stop: (infoHash: string) => ipcRenderer.invoke("stop-torrent", infoHash),
-    onStarted: (callback: (event: IpcRendererEvent, meta: Meta) => void) =>
-      ipcRenderer.on("torrent-started", callback),
+    init: () => ipcRenderer.invoke("init-torrent"),
+    seed: (meta: Meta) => ipcRenderer.invoke("seed-torrent", meta),
+    destroy: (infoHash: string) =>
+      ipcRenderer.invoke("destroy-torrent", infoHash),
+    destroyAll: () => ipcRenderer.invoke("destroy-all-torrent"),
     onStateUpdated: (
-      callback: (event: IpcRendererEvent, state: TorrentClientInfo) => void
+      callback: (event: IpcRendererEvent, state: Torrent) => void
     ) => ipcRenderer.on("torrent-state-updated", callback),
+    removeStateUpdatedListener: () =>
+      ipcRenderer.removeAllListeners("torrent-state-updated"),
   },
 });

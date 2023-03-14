@@ -1,7 +1,6 @@
 import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
-import { torrent } from "rum-torrent";
+import { torrent as RumTorrent } from "rum-torrent";
 import log from "electron-log";
-import Store from "electron-store";
 
 // https://github.com/webtorrent/create-torrent/blob/master/index.js#L16
 const announceList = [
@@ -14,71 +13,111 @@ const announceList = [
   ["wss://tracker.openwebtorrent.com"],
 ];
 
-const store = new Store();
-
 export class Torrent {
   public client: any;
+  private timer: NodeJS.Timer | null = null;
 
   constructor() {}
 
-  async startTorrent(event: IpcMainInvokeEvent, meta: Meta, ..._args: any[]) {
-    log.debug("start-torrent", meta);
-    store.set('playing', meta);
-
-    await torrent.init({
-      callback: (state: any) => {
-        log.debug(state);
-        event.sender.send("torrent-state-updated", state, meta);
-      },
-    });
-    this.client = await torrent.getClient();
-
-    this.client.on("error", (error: ErrorEvent) => {
-      log.error(error);
-    });
-
-    // load local player
-    const win = BrowserWindow.fromWebContents(event.sender);
-    log.debug(win.webContents.getURL());
-
-    await win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-    win.webContents.send("torrent-started", meta);
-
-    const parsedTorrent = await torrent.parseTorrent(meta.infoHash);
-
-    // check if torrent already added
-    const duplicateTorrent = this.client.torrents.find((t: any) => {
-      t.infoHash === meta.infoHash;
-    });
-
-    if (duplicateTorrent) {
-      log.warn(`Torrent already added: ${meta.infoHash}`);
-      log.warn(`Torrent progress: ${duplicateTorrent.progress}`);
-      return;
+  async init() {
+    if (!this.client) {
+      await RumTorrent.init({
+        callback: (state: any) => {
+          log.debug(state);
+        },
+      });
+      this.client = await RumTorrent.getClient();
+      this.client.on("error", (error: ErrorEvent) => {
+        log.error(error);
+      });
     }
 
-    // clear previous torrents
-    this.clearTorrents();
+    return this.client ? true : false;
+  }
 
-    log.warn(`current torrents ${this.client.torrents.length}`);
-    torrent.seed(torrent.toMagnetURI(parsedTorrent), {
-      announce: announceList,
+  async seed(event: IpcMainInvokeEvent, meta: Meta, ..._args: any[]) {
+    await this.init();
+
+    let existedTorrent: any = null;
+    this.client.torrents.forEach((t: any) => {
+      if (t.infoHash === meta.infoHash) {
+        existedTorrent = t;
+      } else {
+        t.destroy();
+      }
+    });
+
+    if (existedTorrent) {
+      log.warn(`Torrent already added: ${meta.infoHash}`);
+      log.warn(`Torrent progress: ${existedTorrent.progress}`);
+      if (existedTorrent.paused) existedTorrent.resume();
+    } else {
+      const parsedTorrent = await RumTorrent.parseTorrent(meta.infoHash);
+      await RumTorrent.seed(RumTorrent.toMagnetURI(parsedTorrent), {
+        announce: announceList,
+      });
+    }
+
+    // clear previous timer
+    if (this.timer) clearInterval(this.timer);
+
+    // send torrent state every 1.5s
+    this.timer = setInterval(() => {
+      event.sender.send("torrent-state-updated", this.state(meta.infoHash));
+    }, 1500);
+  }
+
+  destroyAll() {
+    this.client.torrents.forEach((torrent: any) => {
+      torrent.destroy();
     });
   }
 
-  clearTorrents() {
-    this.client.torrents.forEach(async (torrent: any) => {
-      await torrent.destroy();
-    });
+  destroy(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
+    log.debug("destroy-torrent", infoHash);
+
+    const torrent = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+    torrent?.destroy();
   }
 
-  stopTorrent(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
-    log.debug("stop-torrent", infoHash);
+  state(infoHash: string) {
+    const torrent: any = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
 
-    const t = this.client.torrents.find((torrent: any) => {
-      torrent.infoHash === infoHash;
-    });
-    t?.destroy();
+    return {
+      name: torrent?.name,
+      infoHash: torrent?.infoHash,
+      magnetURI: torrent?.progress,
+      torrentFile: torrent?.torrentFile,
+      announce: torrent?.announce,
+      files: torrent?.files?.map((f: any) => ({
+        name: f.name,
+        path: f.path,
+        length: f.length,
+        downloaded: f.downloaded,
+        progress: f.progress,
+        streamUrl: `http://localhost:${
+          this.client._server.server.address().port
+        }/rum-pt/${infoHash}/${f.path}`,
+      })),
+      timeRemaining: torrent?.timeRemaining,
+      received: torrent?.received,
+      downloaded: torrent?.downloaded,
+      uploaded: torrent?.uploaded,
+      progress: torrent?.progress,
+      ratio: torrent?.ratio,
+      numPeers: torrent?.numPeers,
+      path: torrent?.path,
+      ready: torrent?.ready,
+      paused: torrent?.paused,
+      done: torrent?.done,
+      length: torrent?.length,
+      created: torrent?.created,
+      createdBy: torrent?.createdBy,
+      comment: torrent?.comment,
+    };
   }
 }

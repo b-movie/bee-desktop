@@ -17,30 +17,34 @@ type Meta = {
 };
 
 type Torrent = {
-    status: string;
-    name: string;
-    infoHash: string;
-    magnet: string;
-    speed: string;
-    path: string;
-    downloaded: string;
-    uploaded: string;
-    runningTime: string;
-    timeRemaining: string;
-    trackers: string[];
-    peers: string[];
-    files: string[];
-    wires: string[];
-}
+  name: string;
+  infoHash: string;
+  magnetURI: string;
+  torrentFile: string;
+  announce: string[];
+  files: TorrentFile[];
+  timeRemaining: string;
+  received: string;
+  downloaded: string;
+  uploaded: string;
+  progress: string;
+  ratio: string;
+  numPeers: string;
+  path: string;
+  ready: boolean;
+  paused: boolean;
+  done: boolean;
+  length: number;
+  created: Date;
+  createdBy: string;
+  comment: string;
+};
 
-type TorrentClientInfo = {
-  peerId: string;
-  nodeId: string;
-  externalIp: string;
-  dhtPort: number;
-  dhtNatUpnp: string;
-  torrentPort: number;
-  torrentNatUpnp: string;
-  httpPort: number;
-  torrents: Torrent[];
+type TorrentFile = {
+  name: string;
+  path: string;
+  length: number;
+  downloaded: number;
+  progress: number;
+  streamUrl: string;
 };
