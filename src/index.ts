@@ -1,6 +1,13 @@
 // polyfill for crypto
 globalThis.crypto = require("crypto");
-import { app, BrowserWindow, crashReporter, ipcMain } from "electron";
+import {
+  app,
+  BrowserWindow,
+  crashReporter,
+  ipcMain,
+  Menu,
+  globalShortcut,
+} from "electron";
 import { Torrent } from "./main/torrent";
 import Store from "electron-store";
 import Mpv from "mpv";
@@ -40,6 +47,16 @@ const createWindow = () => {
 
   // Open the DevTools.
   if (!app.isPackaged) mainWindow.webContents.openDevTools();
+
+  if (app.isPackaged) Menu.setApplicationMenu(null);
+
+  globalShortcut.register("f5", function () {
+    mainWindow.reload();
+  });
+
+  globalShortcut.register("CommandOrControl+R", function () {
+    mainWindow.reload();
+  });
 };
 
 // This method will be called when Electron has finished
