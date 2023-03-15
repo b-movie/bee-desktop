@@ -10,12 +10,15 @@ contextBridge.exposeInMainWorld("__BEE__", {
   store: {
     get: (key: string) => ipcRenderer.invoke("store-get", key),
   },
+  mpv: {
+    play: (url: string) => ipcRenderer.invoke("mpv-play", url),
+  },
   torrent: {
-    init: () => ipcRenderer.invoke("init-torrent"),
-    seed: (meta: Meta) => ipcRenderer.invoke("seed-torrent", meta),
+    init: () => ipcRenderer.invoke("torrent-init"),
+    seed: (meta: Meta) => ipcRenderer.invoke("torrent-seed", meta),
     destroy: (infoHash: string) =>
-      ipcRenderer.invoke("destroy-torrent", infoHash),
-    destroyAll: () => ipcRenderer.invoke("destroy-all-torrent"),
+      ipcRenderer.invoke("torrent-destroy", infoHash),
+    destroyAll: () => ipcRenderer.invoke("torrent-destroy-all"),
     onStateUpdated: (
       callback: (event: IpcRendererEvent, state: Torrent) => void
     ) => ipcRenderer.on("torrent-state-updated", callback),

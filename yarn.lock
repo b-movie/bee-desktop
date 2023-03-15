@@ -4857,6 +4857,13 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
+mpv@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/mpv/-/mpv-1.0.0.tgz#811dca2ddbfab9a7f6d35f1cba9647ee9386d11d"
+  integrity sha512-6jaT6dmywZHhab+rF3OQU8PIFesxWLNHuKASpOiHSrXwZlx7sPljTfYxd1DA6ROWd1FAc9oeAXxnouJVoh7zgg==
+  dependencies:
+    prexit "1.0.0"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -5572,6 +5579,11 @@ pretty-error@^4.0.0:
   dependencies:
     lodash "^4.17.20"
     renderkid "^3.0.0"
+
+prexit@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/prexit/-/prexit-1.0.0.tgz#b718cbcd7c8a4853d6d771fc3db2877c739af1e4"
+  integrity sha512-/isfZs8xYFCvIrQOcAxevCHSbVbKdi62yPgW1AQAd7C7Vedn13IhJ4c9NuyxFifQw97LrQl/wFtbW59tuHOHgg==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

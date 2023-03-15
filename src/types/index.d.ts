@@ -2,6 +2,7 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare module "rum-torrent";
 declare module "parse-torrent";
 declare module "create-torrent";
+declare module "mpv";
 
 type Meta = {
   infoHash: string;
@@ -27,6 +28,8 @@ type Torrent = {
   received: string;
   downloaded: string;
   uploaded: string;
+  downloadSpeed: number;
+  uploadSpeed: number;
   progress: string;
   ratio: string;
   numPeers: string;

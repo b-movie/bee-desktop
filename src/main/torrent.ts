@@ -107,6 +107,8 @@ export class Torrent {
       received: torrent?.received,
       downloaded: torrent?.downloaded,
       uploaded: torrent?.uploaded,
+      downloadSpeed: torrent?.downloadSpeed,
+      uploadSpeed: torrent?.uploadSpeed,
       progress: torrent?.progress,
       ratio: torrent?.ratio,
       numPeers: torrent?.numPeers,

@@ -3,6 +3,7 @@ globalThis.crypto = require("crypto");
 import { app, BrowserWindow, crashReporter, ipcMain } from "electron";
 import { Torrent } from "./main/torrent";
 import Store from "electron-store";
+import Mpv from "mpv";
 import log from "electron-log";
 
 const store = new Store();
@@ -49,17 +50,26 @@ app.on("ready", () => {
 
   const torrent = new Torrent();
 
-  ipcMain.handle("init-torrent", () => torrent.init());
+  ipcMain.handle("torrent-init", () => torrent.init());
 
-  ipcMain.handle("seed-torrent", (event, meta, ...args) =>
+  ipcMain.handle("torrent-seed", (event, meta, ...args) =>
     torrent.seed(event, meta, ...args)
   );
 
-  ipcMain.handle("destroy-all-torrent", () => torrent.destroyAll());
+  ipcMain.handle("torrent-destroy-all", () => torrent.destroyAll());
 
-  ipcMain.handle("destroy-torrent", (event, infoHash, ...args) =>
+  ipcMain.handle("torrent-destroy", (event, infoHash, ...args) =>
     torrent.destroy(event, infoHash, ...args)
   );
+
+  const mpv = new Mpv();
+  ipcMain.handle("mpv-play", (event, url, ...args) => {
+    mpv.command("loadfile", url);
+    mpv.on("error", (err: ErrorEvent) => {
+      log.error(err);
+    });
+  });
+
   ipcMain.handle("store-get", (_event, key) => {
     return store.get(key);
   });
