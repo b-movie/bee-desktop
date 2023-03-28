@@ -2,7 +2,7 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare module "rum-torrent";
 declare module "parse-torrent";
 declare module "create-torrent";
-declare module "mpv";
+declare module "node-mpv";
 
 type Meta = {
   infoHash: string;

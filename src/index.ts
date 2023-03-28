@@ -12,6 +12,7 @@ import { Torrent } from "./main/torrent";
 import Store from "electron-store";
 import MPV from "node-mpv";
 import log from "electron-log";
+import os from "os";
 
 const store = new Store();
 const WEBAPP_URL = app.isPackaged
@@ -29,6 +30,7 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+let winID = 0;
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -37,7 +39,15 @@ const createWindow = () => {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
+    transparent: true,
   });
+  let hbuf = mainWindow.getNativeWindowHandle();
+
+  if (os.endianness() == "LE") {
+    winID = hbuf.readInt32LE();
+  } else {
+    winID = hbuf.readInt32BE();
+  }
 
   // and load the index.html of the app.
   // mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
@@ -80,8 +90,9 @@ app.on("ready", () => {
   );
 
   ipcMain.handle("mpv-play", async (event, url, ...args) => {
+    // const mpv = new MPV({}, ["--fullscreen", `--wid=${winID}`]);
     const mpv = new MPV({}, ["--fullscreen"]);
-    mpv.on("status", (status) => {
+    mpv.on("status", (status: any) => {
       log.info("MPV", status);
     });
     mpv.on("quit", () => {
