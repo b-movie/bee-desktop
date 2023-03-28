@@ -10,7 +10,7 @@ import {
 } from "electron";
 import { Torrent } from "./main/torrent";
 import Store from "electron-store";
-import Mpv from "mpv";
+import MPV from "node-mpv";
 import log from "electron-log";
 
 const store = new Store();
@@ -79,12 +79,20 @@ app.on("ready", () => {
     torrent.destroy(event, infoHash, ...args)
   );
 
-  const mpv = new Mpv();
-  ipcMain.handle("mpv-play", (event, url, ...args) => {
-    mpv.command("loadfile", url);
-    mpv.on("error", (err: ErrorEvent) => {
-      log.error(err);
+  ipcMain.handle("mpv-play", async (event, url, ...args) => {
+    const mpv = new MPV({}, ["--fullscreen"]);
+    mpv.on("status", (status) => {
+      log.info("MPV", status);
     });
+    mpv.on("quit", () => {
+      log.warn("MPV", "quit by user");
+    });
+    try {
+      await mpv.start();
+      await mpv.load(url);
+    } catch (err) {
+      log.error(err);
+    }
   });
 
   ipcMain.handle("store-get", (_event, key) => {

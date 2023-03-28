@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
+import { IpcMainInvokeEvent } from "electron";
 import { torrent as RumTorrent } from "rum-torrent";
 import log from "electron-log";
 
@@ -17,13 +17,11 @@ export class Torrent {
   public client: any;
   private timer: NodeJS.Timer | null = null;
 
-  constructor() {}
-
   async init() {
     if (!this.client) {
       await RumTorrent.init({
         callback: (state: any) => {
-          log.debug(state);
+          // log.debug(state);
         },
       });
       this.client = await RumTorrent.getClient();
