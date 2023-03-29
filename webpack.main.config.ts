@@ -1,4 +1,5 @@
 import type { Configuration } from "webpack";
+import CopyPlugin from "copy-webpack-plugin";
 
 import { rules } from "./webpack.rules";
 
@@ -19,5 +20,10 @@ export const mainConfig: Configuration = {
     {
       "utp-native": "commonjs utp-native",
     },
+  ],
+  plugins: [
+    new CopyPlugin({
+      patterns: [{ from: "libs/mpv/config", to: "libs/mpv/config" }],
+    }),
   ],
 };
