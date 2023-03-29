@@ -31,6 +31,7 @@ const createWindow = () => {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
+    icon: "assets/logo.ico",
     transparent: true,
   });
 
@@ -102,6 +103,7 @@ app.on("ready", () => {
       log.warn("MPV", "quit by user");
       win.setFullScreen(false);
     });
+
     try {
       await mpv.start();
       await mpv.load(url);

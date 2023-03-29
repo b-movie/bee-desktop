@@ -23,7 +23,10 @@ export const mainConfig: Configuration = {
   ],
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: "libs/mpv/config", to: "libs/mpv/config" }],
+      patterns: [
+        { from: "libs/mpv/config", to: "libs/mpv/config" },
+        { from: "assets", to: "assets" }
+      ],
     }),
   ],
 };
