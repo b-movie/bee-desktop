@@ -7,6 +7,7 @@ import MPV from "node-mpv";
 import log from "electron-log";
 import os from "os";
 
+let mpv: any;
 const store = new Store();
 const WEBAPP_URL = app.isPackaged
   ? "https://beeapp.fly.dev"
@@ -87,7 +88,7 @@ app.on("ready", () => {
 
   ipcMain.handle("mpv-play", async (event, url, ...args) => {
     log.info("MPV", "play", winID);
-    const mpv = new MPV({}, [
+    mpv = new MPV({}, [
       `--wid=${winID}`,
       "--fullscreen",
       "--config-dir=libs/mpv/config",
@@ -120,7 +121,18 @@ app.on("ready", () => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on("window-all-closed", () => {
+app.on("window-all-closed", async () => {
+  log.info("window all closed");
+
+  if (mpv?.isRunning()) {
+    try {
+      await mpv.quit();
+      log.info("MPV running:", mpv.isRunning());
+    } catch (err) {
+      log.error(err);
+    }
+  }
+
   if (process.platform !== "darwin") {
     app.quit();
   }
