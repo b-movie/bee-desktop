@@ -37,8 +37,9 @@ export const mainConfig: Configuration = {
     new WebpackShellPluginNext({
       onBuildEnd: {
         scripts: [
-          "chmod +x .webpack/main/libs/mpv/mpv",
-          "chmod +x .webpack/main/libs/mpv/mpv.exe",
+          `chmod +x .webpack/main/libs/mpv/mpv${
+            platform === "win32" ? ".exe" : ""
+          }`,
         ],
         blocking: false,
         parallel: true,
