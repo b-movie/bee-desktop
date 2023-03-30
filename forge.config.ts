@@ -45,7 +45,7 @@ const config: ForgeConfig = {
           owner: "an-lee",
           name: "bee-desktop",
         },
-        prerelease: true,
+        draft: true,
       },
     },
   ],
