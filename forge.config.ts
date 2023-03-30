@@ -37,6 +37,18 @@ const config: ForgeConfig = {
       loggerPort: 9001,
     }),
   ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "an-lee",
+          name: "bee-desktop",
+        },
+        prerelease: true,
+      },
+    },
+  ],
 };
 
 export default config;
