@@ -2,13 +2,13 @@
 globalThis.crypto = require("crypto");
 import { app, BrowserWindow, ipcMain, Menu, globalShortcut } from "electron";
 import { Torrent } from "./main/torrent";
+import { MPV } from "./main/mpv";
 import Store from "electron-store";
-import MPV from "node-mpv";
 import log from "electron-log";
 import os from "os";
 import path from "path";
 
-let mpv: any;
+const mpv = new MPV();
 const store = new Store();
 const WEBAPP_URL = app.isPackaged
   ? "https://beeapp.fly.dev"
@@ -34,7 +34,6 @@ const createWindow = () => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
     icon: "assets/logo.ico",
-    transparent: true,
   });
 
   // and load the index.html of the app.
@@ -81,43 +80,22 @@ app.on("ready", () => {
     torrent.seed(event, meta, ...args)
   );
 
-  ipcMain.handle("torrent-destroy-all", () => torrent.destroyAll());
+  ipcMain.handle("torrent-destroy-all", () => {
+    torrent.destroyAll();
+    mpv.quit();
+  });
 
-  ipcMain.handle("torrent-destroy", (event, infoHash, ...args) =>
-    torrent.destroy(event, infoHash, ...args)
-  );
+  ipcMain.handle("torrent-destroy", (event, infoHash, ...args) => {
+    torrent.destroy(event, infoHash, ...args);
+    mpv.quit();
+  });
 
-  ipcMain.handle("mpv-play", async (event, url, ...args) => {
-    log.info("MPV", "play", winID);
+  ipcMain.handle("mpv-play", (event, url, ...args) => {
+    mpv.load(url);
+  });
 
-    let binary = path.join(__dirname, "libs/mpv/mpv");
-    if (os.platform() == "win32") {
-      binary = path.join(__dirname, "libs/mpv/mpv.exe");
-    }
-    mpv = new MPV(
-      {
-        binary,
-      },
-      [`--wid=${winID}`, "--fullscreen", "--config-dir=libs/mpv/config"]
-    );
-    // const mpv = new MPV({}, ["--fullscreen"]);
-    mpv.on("status", (status: any) => {
-      log.info("MPV", status);
-      if (status.property == "fullscreen") {
-        win.setFullScreen(status.value);
-      }
-    });
-    mpv.on("quit", () => {
-      log.warn("MPV", "quit by user");
-      win.setFullScreen(false);
-    });
-
-    try {
-      await mpv.start();
-      await mpv.load(url);
-    } catch (err) {
-      log.error(err);
-    }
+  ipcMain.handle("mpv-quit", () => {
+    mpv.quit();
   });
 
   ipcMain.handle("store-get", (_event, key) => {
@@ -131,15 +109,7 @@ app.on("ready", () => {
 app.on("window-all-closed", async () => {
   log.info("window all closed");
 
-  if (mpv?.isRunning()) {
-    try {
-      await mpv.quit();
-      log.info("MPV running:", mpv.isRunning());
-    } catch (err) {
-      log.error(err);
-    }
-  }
-
+  mpv.quit();
   if (process.platform !== "darwin") {
     app.quit();
   }

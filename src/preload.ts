@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
   },
   mpv: {
     play: (url: string) => ipcRenderer.invoke("mpv-play", url),
+    quit: () => ipcRenderer.invoke("mpv-quit"),
   },
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
