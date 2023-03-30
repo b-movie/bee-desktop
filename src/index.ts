@@ -6,6 +6,7 @@ import Store from "electron-store";
 import MPV from "node-mpv";
 import log from "electron-log";
 import os from "os";
+import path from "path";
 
 let mpv: any;
 const store = new Store();
@@ -88,11 +89,17 @@ app.on("ready", () => {
 
   ipcMain.handle("mpv-play", async (event, url, ...args) => {
     log.info("MPV", "play", winID);
-    mpv = new MPV({}, [
-      `--wid=${winID}`,
-      "--fullscreen",
-      "--config-dir=libs/mpv/config",
-    ]);
+
+    let binary = path.join(__dirname, "libs/mpv/mpv");
+    if (os.platform() == "win32") {
+      binary = path.join(__dirname, "libs/mpv/mpv.exe");
+    }
+    mpv = new MPV(
+      {
+        binary,
+      },
+      [`--wid=${winID}`, "--fullscreen", "--config-dir=libs/mpv/config"]
+    );
     // const mpv = new MPV({}, ["--fullscreen"]);
     mpv.on("status", (status: any) => {
       log.info("MPV", status);

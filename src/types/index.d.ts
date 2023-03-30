@@ -3,6 +3,7 @@ declare module "rum-torrent";
 declare module "parse-torrent";
 declare module "create-torrent";
 declare module "node-mpv";
+declare module "webpack-permissions-plugin";
 
 type Meta = {
   infoHash: string;
