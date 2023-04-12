@@ -5251,6 +5251,10 @@ node-mpv@^2.0.0-beta.2:
   resolved "https://registry.yarnpkg.com/node-mpv/-/node-mpv-2.0.0-beta.2.tgz#c61dcfeb9c33d37df8895ae7f50a3c856eab479c"
   integrity sha512-jf1InAB6tSXYlLs53DSw7ZEGCAhuWibILMF8GU6FmX6jXvkScLfGa9B7nmrIidG8euDpi3hdnUht0PqrHlAbXA==
 
+"node-mpv@https://github.com/A-Julien/Node-MPV.git":
+  version "2.0.0-beta.3"
+  resolved "https://github.com/A-Julien/Node-MPV.git#c7f84d7966b82e5916c3b4bb47cac667bb895c22"
+
 node-releases@^2.0.8:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.10.tgz#c311ebae3b6a148c89b1813fd7c4d3c024ef537f"

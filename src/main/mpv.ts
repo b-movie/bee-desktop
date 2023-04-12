@@ -28,6 +28,7 @@ export class MPV {
     });
     this.mpv.on("quit", () => {
       log.warn("MPV", "quit by user");
+      this.mpv = null;
     });
   }
 
