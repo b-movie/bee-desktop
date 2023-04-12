@@ -6,7 +6,6 @@ import { MPV } from "./main/mpv";
 import Store from "electron-store";
 import log from "electron-log";
 import os from "os";
-import path from "path";
 
 const mpv = new MPV();
 const store = new Store();

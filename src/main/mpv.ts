@@ -1,10 +1,24 @@
 import NodeMPV from "node-mpv";
 import log from "electron-log";
+import os from "os";
+import { chmodSync, existsSync } from "fs";
+import path from "path";
 
 export class MPV {
   public mpv: any;
 
   init(options: object = {}, args: string[] = []) {
+    const platform = os.platform();
+    const binary =
+      platform === "win32"
+        ? path.join(__dirname, "libs/mpv/mpv.exe")
+        : path.join(__dirname, "libs/mpv/mpv");
+    if (existsSync(binary)) {
+      log.info("MPV", "chmod 755", binary);
+      chmodSync(binary, 0o755);
+      options = { ...options, binary };
+    }
+
     const defaultArgs = ["--fullscreen", "--config-dir=libs/mpv/config"];
     args = [...defaultArgs, ...args];
 
