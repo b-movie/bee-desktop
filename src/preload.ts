@@ -15,7 +15,10 @@ contextBridge.exposeInMainWorld("__BEE__", {
     quit: () => ipcRenderer.invoke("mpv-quit"),
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
       ipcRenderer.on("mpv-error", callback),
+    onStateUpdated: (callback: (event: IpcRendererEvent, state: any) => void) =>
+      ipcRenderer.on("mpv-state-updated", callback),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
+    removeStateUpdatedListener: () => ipcRenderer.removeAllListeners("mpv-state-updated"),
   },
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),

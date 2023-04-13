@@ -8,7 +8,7 @@ import path from "path";
 export class MPV {
   public mpv: any;
 
-  init(options: object = {}, args: string[] = []) {
+  init(event: IpcMainInvokeEvent, options: object = {}, args: string[] = []) {
     const platform = os.platform();
     const binary =
       platform === "win32"
@@ -19,13 +19,15 @@ export class MPV {
       chmodSync(binary, 0o755);
       options = { ...options, binary };
     }
+    const configDir = path.join(__dirname, "libs/mpv/config");
 
-    const defaultArgs = ["--fullscreen", "--config-dir=libs/mpv/config"];
+    const defaultArgs = ["--fullscreen", `--config-dir=${configDir}`];
     args = [...defaultArgs, ...args];
 
     this.mpv = new NodeMPV(options, args);
     this.mpv.on("status", (status: any) => {
       log.info("MPV", status);
+      event.sender.send("mpv-state-updated", status);
     });
     this.mpv.on("quit", () => {
       log.warn("MPV", "quit by user");
@@ -35,7 +37,7 @@ export class MPV {
 
   async load(event: IpcMainInvokeEvent, url: string) {
     if (!this.mpv) {
-      this.init();
+      this.init(event);
     }
 
     try {
