@@ -90,7 +90,7 @@ app.on("ready", () => {
   });
 
   ipcMain.handle("mpv-play", (event, url, ...args) => {
-    mpv.load(url);
+    mpv.load(event, url);
   });
 
   ipcMain.handle("mpv-quit", () => {

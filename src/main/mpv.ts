@@ -1,3 +1,4 @@
+import { IpcMainInvokeEvent } from "electron";
 import NodeMPV from "node-mpv";
 import log from "electron-log";
 import os from "os";
@@ -32,7 +33,7 @@ export class MPV {
     });
   }
 
-  async load(url: string) {
+  async load(event: IpcMainInvokeEvent, url: string) {
     if (!this.mpv) {
       this.init();
     }
@@ -42,11 +43,13 @@ export class MPV {
       await this.mpv.load(url);
     } catch (err) {
       log.error(err);
+      event.sender.send("mpv-error", err);
     }
   }
 
   async quit() {
     await this.mpv?.quit();
+    this.mpv = null;
   }
 
   isRunning() {
