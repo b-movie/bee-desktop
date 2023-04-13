@@ -39,9 +39,9 @@ export class MPV {
     this.mpv.on("status", (status: any) => {
       log.info("MPV", status);
       event.sender.send("mpv-state-updated", status);
-      if (status.property == "fullscreen") {
-        win.setFullScreen(status.value);
-      }
+      // if (status.property == "fullscreen") {
+      //   win.setFullScreen(status.value);
+      // }
     });
 
     this.mpv.on("quit", () => {
