@@ -21,21 +21,17 @@ export class MPV {
     }
     const configDir = path.join(__dirname, "libs/mpv/config");
 
-    let winID: number;
     const win = BrowserWindow.fromWebContents(event.sender);
-    let hbuf = win.getNativeWindowHandle();
+    // let winID: number;
+    // let hbuf = win.getNativeWindowHandle();
+    //
+    // if (os.endianness() == "LE") {
+    //   winID = hbuf.readInt32LE();
+    // } else {
+    //   winID = hbuf.readInt32BE();
+    // }
 
-    if (os.endianness() == "LE") {
-      winID = hbuf.readInt32LE();
-    } else {
-      winID = hbuf.readInt32BE();
-    }
-
-    const defaultArgs = [
-      "--fullscreen",
-      `--config-dir=${configDir}`,
-      `--wid=${winID}`,
-    ];
+    const defaultArgs = ["--fullscreen", `--config-dir=${configDir}`];
     args = [...defaultArgs, ...args];
 
     this.mpv = new NodeMPV(options, args);
