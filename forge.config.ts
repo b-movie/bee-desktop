@@ -10,7 +10,7 @@ import { rendererConfig } from "./webpack.renderer.config";
 
 const config: ForgeConfig = {
   packagerConfig: {
-    icon: "assets/icon",
+    icon: "./assets/icon",
   },
   rebuildConfig: {},
   makers: [
@@ -19,7 +19,7 @@ const config: ForgeConfig = {
     new MakerRpm({}),
     new MakerDeb({
       options: {
-        icon: "assets/icon.png",
+        icon: "./assets/icon.png",
       },
     }),
   ],
