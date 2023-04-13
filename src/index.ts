@@ -33,6 +33,7 @@ const createWindow = () => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
     icon: "assets/logo.ico",
+    transparent: true,
   });
 
   // and load the index.html of the app.
@@ -53,23 +54,13 @@ const createWindow = () => {
   globalShortcut.register("CommandOrControl+R", function () {
     mainWindow.reload();
   });
-
-  return mainWindow;
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  let winID: number;
-  const win = createWindow();
-  let hbuf = win.getNativeWindowHandle();
-
-  if (os.endianness() == "LE") {
-    winID = hbuf.readInt32LE();
-  } else {
-    winID = hbuf.readInt32BE();
-  }
+  createWindow();
 
   const torrent = new Torrent();
 

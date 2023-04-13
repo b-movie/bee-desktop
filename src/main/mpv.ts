@@ -1,4 +1,4 @@
-import { IpcMainInvokeEvent } from "electron";
+import { BrowserWindow, IpcMainInvokeEvent } from "electron";
 import NodeMPV from "node-mpv";
 import log from "electron-log";
 import os from "os";
@@ -21,17 +21,37 @@ export class MPV {
     }
     const configDir = path.join(__dirname, "libs/mpv/config");
 
-    const defaultArgs = ["--fullscreen", `--config-dir=${configDir}`];
+    let winID: number;
+    const win = BrowserWindow.fromWebContents(event.sender);
+    let hbuf = win.getNativeWindowHandle();
+
+    if (os.endianness() == "LE") {
+      winID = hbuf.readInt32LE();
+    } else {
+      winID = hbuf.readInt32BE();
+    }
+
+    const defaultArgs = [
+      "--fullscreen",
+      `--config-dir=${configDir}`,
+      `--wid=${winID}`,
+    ];
     args = [...defaultArgs, ...args];
 
     this.mpv = new NodeMPV(options, args);
+
     this.mpv.on("status", (status: any) => {
       log.info("MPV", status);
       event.sender.send("mpv-state-updated", status);
+      if (status.property == "fullscreen") {
+        win.setFullScreen(status.value);
+      }
     });
+
     this.mpv.on("quit", () => {
       log.warn("MPV", "quit by user");
       this.mpv = null;
+      win.setFullScreen(false);
     });
   }
 
