@@ -64,6 +64,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "node-mpv": "https://github.com/A-Julien/Node-MPV.git",
+    "opensubtitles.com": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rum-torrent": "^0.1.16"

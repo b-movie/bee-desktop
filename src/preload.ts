@@ -3,12 +3,14 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
 contextBridge.exposeInMainWorld("__BEE__", {
+  cast: {
+    players: () => ipcRenderer.invoke("cast-players"),
+    play: (url: string, host: string, options: Object = {}) =>
+      ipcRenderer.invoke("cast-play", url, host, options),
+  },
   client: {
     platform: "desktop",
     version: require("../package.json").version,
-  },
-  store: {
-    get: (key: string) => ipcRenderer.invoke("store-get", key),
   },
   mpv: {
     play: (url: string) => ipcRenderer.invoke("mpv-play", url),
@@ -18,7 +20,16 @@ contextBridge.exposeInMainWorld("__BEE__", {
     onStateUpdated: (callback: (event: IpcRendererEvent, state: any) => void) =>
       ipcRenderer.on("mpv-state-updated", callback),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
-    removeStateUpdatedListener: () => ipcRenderer.removeAllListeners("mpv-state-updated"),
+    removeStateUpdatedListener: () =>
+      ipcRenderer.removeAllListeners("mpv-state-updated"),
+  },
+  opensubtitles: {
+    search: (query: string) =>
+      ipcRenderer.invoke("opensubtitles-search", query),
+    download: (id: string) => ipcRenderer.invoke("opensubtitles-download", id),
+  },
+  store: {
+    get: (key: string) => ipcRenderer.invoke("store-get", key),
   },
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),

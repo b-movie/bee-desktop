@@ -4,6 +4,7 @@ declare module "parse-torrent";
 declare module "create-torrent";
 declare module "node-mpv";
 declare module "webpack-permissions-plugin";
+declare module "dlnacasts";
 
 type Meta = {
   infoHash: string;
