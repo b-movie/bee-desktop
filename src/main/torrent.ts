@@ -66,6 +66,8 @@ export class Torrent {
   }
 
   destroyAll() {
+    if (!this.client) return;
+
     this.client.torrents.forEach((torrent: any) => {
       torrent.destroy();
     });

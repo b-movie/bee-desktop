@@ -86,10 +86,11 @@ app.on("ready", () => {
   });
 
   ipcMain.handle("cast-players", () => {
-    return cast.update().players;
+    cast.update();
+    return cast.players;
   });
 
-  ipcMain.handle("cast-play", (event, url, host, options = {}) => {
+  ipcMain.handle("cast-play", (_event, url, host, options = {}) => {
     const player = cast.update().players.find((p: any) => p.host === host);
     player.play(url, options);
   });
