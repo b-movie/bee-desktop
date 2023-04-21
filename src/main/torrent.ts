@@ -61,6 +61,9 @@ export class Torrent {
 
     // send torrent state every 1.5s
     this.timer = setInterval(() => {
+      // avoid js error when window is closed
+      if (!event.sender || event.sender.isDestroyed()) return;
+
       event.sender.send("torrent-state-updated", this.state(meta.infoHash));
     }, 1500);
   }

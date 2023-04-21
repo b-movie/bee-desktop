@@ -100,17 +100,13 @@ app.on("ready", () => {
   });
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+// Quit when all windows are closed, even on macOS.
 app.on("window-all-closed", async () => {
   log.info("window all closed");
 
   torrent.destroyAll();
   mpv.quit();
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.on("activate", () => {
