@@ -50,7 +50,7 @@ const config: ForgeConfig = {
       name: "@electron-forge/publisher-github",
       config: {
         repository: {
-          owner: "an-lee",
+          owner: "b-movie",
           name: "bee-desktop",
         },
         draft: true,
