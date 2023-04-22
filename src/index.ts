@@ -41,10 +41,36 @@ const createWindow = () => {
   // load webapp url
   mainWindow.loadURL(WEBAPP_URL);
 
-  // Open the DevTools.
-  if (!app.isPackaged) mainWindow.webContents.openDevTools();
-
-  if (app.isPackaged) Menu.setApplicationMenu(null);
+  const menu = Menu.buildFromTemplate([
+    {
+      role: "appMenu",
+      label: "BEE",
+      submenu: [
+        {
+          label: "Home",
+          click: () => {
+            mainWindow.loadURL(WEBAPP_URL);
+          },
+        },
+        { role: "reload" },
+        { type: "separator" },
+        { role: "quit" },
+      ],
+    },
+    {
+      label: "Update",
+      submenu: [
+        {
+          label: "Github",
+          click: async () => {
+            const { shell } = require("electron");
+            await shell.openExternal("https://github.com/b-movie/bee-desktop");
+          },
+        },
+      ],
+    },
+  ]);
+  Menu.setApplicationMenu(menu);
 
   globalShortcut.register("f5", function () {
     mainWindow.reload();
