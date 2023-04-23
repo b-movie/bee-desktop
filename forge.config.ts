@@ -11,16 +11,20 @@ import { rendererConfig } from "./webpack.renderer.config";
 const config: ForgeConfig = {
   packagerConfig: {
     icon: "./assets/icon",
+    executableName: "bee-desktop",
   },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
+      name: "BEE Desktop",
       setupIcon: "./assets/icon.ico",
     }),
     new MakerZIP({}, ["darwin", "win32"]),
     new MakerRpm({}),
     new MakerDeb({
       options: {
+        name: "bee-desktop",
+        productName: "BEE Desktop",
         icon: "./assets/icon.png",
       },
     }),
