@@ -16,7 +16,7 @@ const config: ForgeConfig = {
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
-      name: "BEE Desktop",
+      name: "BeeDesktop",
       setupIcon: "./assets/icon.ico",
     }),
     new MakerZIP({}, ["darwin", "win32"]),
@@ -24,7 +24,7 @@ const config: ForgeConfig = {
     new MakerDeb({
       options: {
         name: "bee-desktop",
-        productName: "BEE Desktop",
+        productName: "BeeDesktop",
         icon: "./assets/icon.png",
       },
     }),
