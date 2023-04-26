@@ -1,6 +1,7 @@
 import { IpcMainInvokeEvent } from "electron";
 import { torrent as RumTorrent } from "rum-torrent";
 import log from "electron-log";
+import ip from "ip";
 
 // https://github.com/webtorrent/create-torrent/blob/master/index.js#L16
 const announceList = [
@@ -12,6 +13,10 @@ const announceList = [
   ["wss://tracker.btorrent.xyz"],
   ["wss://tracker.openwebtorrent.com"],
 ];
+
+// fix windows path
+const toUnixPath = (path: string) =>
+  path.replace(/[\\/]+/g, "/").replace(/^([a-zA-Z]+:|\.\/)/, "");
 
 export class Torrent {
   public client: any;
@@ -102,9 +107,9 @@ export class Torrent {
         length: f.length,
         downloaded: f.downloaded,
         progress: f.progress,
-        streamUrl: `http://localhost:${
+        streamUrl: `http://${ip.address() || "localhost"}:${
           this.client._server.server.address().port
-        }/rum-pt/${infoHash}/${f.path}`,
+        }/rum-pt/${infoHash}/${toUnixPath(f.path)}`,
       })),
       timeRemaining: torrent?.timeRemaining,
       received: torrent?.received,
