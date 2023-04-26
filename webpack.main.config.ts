@@ -34,16 +34,16 @@ export const mainConfig: Configuration = {
         { from: "assets", to: "assets" },
       ],
     }),
-    // new WebpackShellPluginNext({
-    //   onBuildEnd: {
-    //     scripts: [
-    //       `chmod +x .webpack/main/libs/mpv/mpv${
-    //         platform === "win32" ? ".exe" : ""
-    //       }`,
-    //     ],
-    //     blocking: false,
-    //     parallel: true,
-    //   },
-    // }),
+    new WebpackShellPluginNext({
+      onBuildEnd: {
+        scripts: [
+          `chmod +x .webpack/main/libs/mpv/mpv${
+            platform === "win32" ? ".exe" : ""
+          }`,
+        ],
+        blocking: false,
+        parallel: true,
+      },
+    }),
   ],
 };
