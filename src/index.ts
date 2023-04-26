@@ -58,7 +58,7 @@ const createWindow = () => {
       ],
     },
     {
-      label: "Update",
+      role: "about",
       submenu: [
         {
           label: "Github",
