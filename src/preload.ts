@@ -28,6 +28,10 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.invoke("opensubtitles-search", query),
     download: (id: string) => ipcRenderer.invoke("opensubtitles-download", id),
   },
+  shell: {
+    openExternal: (url: string) =>
+      ipcRenderer.invoke("shell-open-external", url),
+  },
   store: {
     get: (key: string) => ipcRenderer.invoke("store-get", key),
   },

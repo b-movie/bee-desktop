@@ -1,6 +1,13 @@
 // polyfill for crypto
 globalThis.crypto = require("crypto");
-import { app, BrowserWindow, ipcMain, Menu, globalShortcut } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  globalShortcut,
+  shell,
+} from "electron";
 import { Torrent } from "./main/torrent";
 import { MPV } from "./main/mpv";
 import Store from "electron-store";
@@ -119,6 +126,10 @@ app.on("ready", () => {
   ipcMain.handle("cast-play", (_event, url, host, options = {}) => {
     const player = cast.update().players.find((p: any) => p.host === host);
     player.play(url, options);
+  });
+
+  ipcMain.handle("shell-open-external", (_event, url) => {
+    shell.openExternal(url);
   });
 
   ipcMain.handle("store-get", (_event, key) => {
