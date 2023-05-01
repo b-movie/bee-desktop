@@ -48,6 +48,9 @@ const createWindow = () => {
   // load webapp url
   mainWindow.loadURL(WEBAPP_URL);
 
+  // Open the DevTools.
+  if (!app.isPackaged) mainWindow.webContents.openDevTools();
+
   const menu = Menu.buildFromTemplate([
     {
       role: "appMenu",
