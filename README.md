@@ -9,8 +9,8 @@ Discover, track, **watch** your favorite movies/series.
 
 ## Screenshots
 
-![]('./assets/screenshot-homepage.png')
+![Homepage](./assets/screenshot-homepage.png)
 
-![]('./assets/screenshot-series-page.png')
+![Series](./assets/screenshot-series-page.png)
 
-![]('./assets/screenshot-episode-stream-page.png')
+![Stream](./assets/screenshot-episode-stream-page.png)
