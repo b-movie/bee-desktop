@@ -13,12 +13,14 @@ contextBridge.exposeInMainWorld("__BEE__", {
     version: require("../package.json").version,
   },
   mpv: {
-    play: (url: string) => ipcRenderer.invoke("mpv-play", url),
+    play: (url: string, options: Object = {} ) => ipcRenderer.invoke("mpv-play", url, options),
     quit: () => ipcRenderer.invoke("mpv-quit"),
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
       ipcRenderer.on("mpv-error", callback),
     onStateUpdated: (callback: (event: IpcRendererEvent, state: any) => void) =>
       ipcRenderer.on("mpv-state-updated", callback),
+    getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
+    getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
     removeStateUpdatedListener: () =>
       ipcRenderer.removeAllListeners("mpv-state-updated"),

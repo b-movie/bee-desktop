@@ -117,6 +117,14 @@ app.on("ready", () => {
     mpv.load(event, url);
   });
 
+  ipcMain.handle("mpv-get-time-position", () => {
+    return mpv.getTimePosition();
+  });
+
+  ipcMain.handle("mpv-get-percent-position", () => {
+    return mpv.getPercentPosition();
+  });
+
   ipcMain.handle("mpv-quit", () => {
     mpv.quit();
   });

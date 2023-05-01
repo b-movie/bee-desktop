@@ -71,4 +71,12 @@ export class MPV {
   isRunning() {
     return this.mpv?.isRunning();
   }
+
+  getTimePosition() {
+    return this.mpv?.getTimePosition();
+  }
+
+  getPercentPosition() {
+    return this.mpv?.getPercentPosition();
+  }
 }
