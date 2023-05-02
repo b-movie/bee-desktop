@@ -13,17 +13,35 @@ contextBridge.exposeInMainWorld("__BEE__", {
     version: require("../package.json").version,
   },
   mpv: {
-    play: (url: string, options: Object = {} ) => ipcRenderer.invoke("mpv-play", url, options),
+    play: (url: string, options: string[] = []) =>
+      ipcRenderer.invoke("mpv-play", url, options),
     quit: () => ipcRenderer.invoke("mpv-quit"),
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
       ipcRenderer.on("mpv-error", callback),
+    onStarted: (callback: (event: IpcRendererEvent) => void) =>
+      ipcRenderer.on("mpv-started", callback),
+    onPaused: (callback: (event: IpcRendererEvent) => void) =>
+      ipcRenderer.on("mpv-paused", callback),
+    onSeek: (callback: (event: IpcRendererEvent) => void) =>
+      ipcRenderer.on("mpv-seek", callback),
     onStateUpdated: (callback: (event: IpcRendererEvent, state: any) => void) =>
       ipcRenderer.on("mpv-state-updated", callback),
+    onTimePositionUpdated: (
+      callback: (event: IpcRendererEvent, time: number) => void
+    ) => ipcRenderer.on("mpv-time-position-updated", callback),
     getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
     getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
     removeStateUpdatedListener: () =>
       ipcRenderer.removeAllListeners("mpv-state-updated"),
+    removeAllListeners: () => {
+      ipcRenderer.removeAllListeners("mpv-error");
+      ipcRenderer.removeAllListeners("mpv-started");
+      ipcRenderer.removeAllListeners("mpv-paused");
+      ipcRenderer.removeAllListeners("mpv-seek");
+      ipcRenderer.removeAllListeners("mpv-state-updated");
+      ipcRenderer.removeAllListeners("mpv-time-position-updated");
+    },
   },
   opensubtitles: {
     search: (query: string) =>

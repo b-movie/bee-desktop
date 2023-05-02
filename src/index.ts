@@ -113,8 +113,8 @@ app.on("ready", () => {
     mpv.quit();
   });
 
-  ipcMain.handle("mpv-play", (event, url, ...args) => {
-    mpv.load(event, url);
+  ipcMain.handle("mpv-play", (event, url, options) => {
+    mpv.load(event, url, options);
   });
 
   ipcMain.handle("mpv-get-time-position", () => {

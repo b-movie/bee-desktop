@@ -37,9 +37,24 @@ export class MPV {
     this.mpv.on("status", (status: any) => {
       log.info("MPV", status);
       event.sender.send("mpv-state-updated", status);
-      // if (status.property == "fullscreen") {
-      //   win.setFullScreen(status.value);
-      // }
+    });
+
+    this.mpv.on("started", async () => {
+      const duration = await this.mpv.getDuration();
+      const metadata = await this.mpv.getMetadata();
+      event.sender.send("mpv-started", { metadata, duration });
+    });
+
+    this.mpv.on("paused", async () => {
+      const timePosition = await this.mpv.getTimePosition();
+      const percentPosition = await this.mpv.getPercentPosition();
+      event.sender.send("mpv-paused", { timePosition, percentPosition });
+    });
+
+    this.mpv.on("timeposition", async (timePosition: number) => {
+      log.info("MPV timeposition", timePosition);
+
+      event.sender.send("mpv-time-position-updated", timePosition);
     });
 
     this.mpv.on("quit", () => {
@@ -49,14 +64,15 @@ export class MPV {
     });
   }
 
-  async load(event: IpcMainInvokeEvent, url: string) {
+  async load(event: IpcMainInvokeEvent, url: string, options: string[] = []) {
     if (!this.mpv) {
       this.init(event);
     }
 
     try {
       await this.mpv.start();
-      await this.mpv.load(url);
+      log.info("MPV", "load", url, options);
+      await this.mpv.load(url, "replace", options);
     } catch (err) {
       log.error(err);
       event.sender.send("mpv-error", err);
