@@ -117,6 +117,11 @@ app.on("ready", () => {
     mpv.load(event, url, options);
   });
 
+  ipcMain.handle("mpv-go-to-position", (_, position) => {
+    log.info("go to position", position);
+    mpv.goToPosition(position);
+  });
+
   ipcMain.handle("mpv-get-time-position", () => {
     return mpv.getTimePosition();
   });

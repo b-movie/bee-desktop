@@ -29,7 +29,11 @@ export class MPV {
     //   winID = hbuf.readInt32BE();
     // }
 
-    const defaultArgs = ["--fullscreen", `--config-dir=${configDir}`];
+    const defaultArgs = [
+      "--fullscreen",
+      `--config-dir=${configDir}`,
+      "--save-position-on-quit",
+    ];
     args = [...defaultArgs, ...args];
 
     this.mpv = new NodeMPV(options, args);
@@ -40,15 +44,15 @@ export class MPV {
     });
 
     this.mpv.on("started", async () => {
-      const duration = await this.mpv.getDuration();
-      const metadata = await this.mpv.getMetadata();
-      event.sender.send("mpv-started", { metadata, duration });
+      event.sender.send("mpv-started");
     });
 
     this.mpv.on("paused", async () => {
-      const timePosition = await this.mpv.getTimePosition();
-      const percentPosition = await this.mpv.getPercentPosition();
-      event.sender.send("mpv-paused", { timePosition, percentPosition });
+      event.sender.send("mpv-paused");
+    });
+
+    this.mpv.on("seek", async (position: { start: number; end: number }) => {
+      event.sender.send("mpv-seek", position);
     });
 
     this.mpv.on("timeposition", async (timePosition: number) => {
@@ -64,7 +68,7 @@ export class MPV {
     });
   }
 
-  async load(event: IpcMainInvokeEvent, url: string, options: string[] = []) {
+  async load(event: IpcMainInvokeEvent, url: string, options: any = {}) {
     if (!this.mpv) {
       this.init(event);
     }
@@ -72,7 +76,10 @@ export class MPV {
     try {
       await this.mpv.start();
       log.info("MPV", "load", url, options);
-      await this.mpv.load(url, "replace", options);
+      await this.mpv.load(url, "replace");
+      if (options.start) {
+        this.mpv.goToPosition(options.start);
+      }
     } catch (err) {
       log.error(err);
       event.sender.send("mpv-error", err);
@@ -86,6 +93,12 @@ export class MPV {
 
   isRunning() {
     return this.mpv?.isRunning();
+  }
+
+  goToPosition(position: number) {
+    if (this.mpv?.isSeekable()) {
+      this.mpv.goToPosition(position);
+    }
   }
 
   getTimePosition() {

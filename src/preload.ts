@@ -16,6 +16,9 @@ contextBridge.exposeInMainWorld("__BEE__", {
     play: (url: string, options: string[] = []) =>
       ipcRenderer.invoke("mpv-play", url, options),
     quit: () => ipcRenderer.invoke("mpv-quit"),
+    goToPosition: (position: number) => {
+      ipcRenderer.invoke("mpv-go-to-position", position);
+    },
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
       ipcRenderer.on("mpv-error", callback),
     onStarted: (callback: (event: IpcRendererEvent) => void) =>
