@@ -68,8 +68,14 @@ const createWindow = () => {
       ],
     },
     {
-      role: "about",
+      role: "help",
       submenu: [
+        {
+          label: "DevTools",
+          click: () => {
+            mainWindow.webContents.openDevTools();
+          },
+        },
         {
           label: "Github",
           click: async () => {
