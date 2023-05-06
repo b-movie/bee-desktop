@@ -103,6 +103,10 @@ app.on("ready", () => {
     torrent.seed(event, meta, ...args)
   );
 
+  ipcMain.handle("torrent-current-state", (_, infoHash) => {
+    torrent.state(infoHash);
+  });
+
   ipcMain.handle("torrent-destroy-all", () => {
     torrent.destroyAll();
     mpv.quit();
@@ -128,6 +132,14 @@ app.on("ready", () => {
 
   ipcMain.handle("mpv-get-percent-position", () => {
     return mpv.getPercentPosition();
+  });
+
+  ipcMain.handle("mpv-get-property", (_, property) => {
+    return mpv.getProperty(property);
+  });
+
+  ipcMain.handle("mpv-is-running", () => {
+    return mpv.isRunning();
   });
 
   ipcMain.handle("mpv-quit", () => {

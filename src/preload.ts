@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
     play: (url: string, options: string[] = []) =>
       ipcRenderer.invoke("mpv-play", url, options),
     quit: () => ipcRenderer.invoke("mpv-quit"),
+    isRunning: () => ipcRenderer.invoke("mpv-is-running"),
     goToPosition: (position: number) => {
       ipcRenderer.invoke("mpv-go-to-position", position);
     },
@@ -25,6 +26,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.on("mpv-started", callback),
     onPaused: (callback: (event: IpcRendererEvent) => void) =>
       ipcRenderer.on("mpv-paused", callback),
+    onStopped: (callback: (event: IpcRendererEvent) => void) =>
+      ipcRenderer.on("mpv-stopped", callback),
     onSeek: (callback: (event: IpcRendererEvent) => void) =>
       ipcRenderer.on("mpv-seek", callback),
     onStateUpdated: (callback: (event: IpcRendererEvent, state: any) => void) =>
@@ -32,6 +35,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
     onTimePositionUpdated: (
       callback: (event: IpcRendererEvent, time: number) => void
     ) => ipcRenderer.on("mpv-time-position-updated", callback),
+    getProperty: (property: string) => ipcRenderer.invoke("mpv-get-property", property),
     getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
     getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
@@ -40,6 +44,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
     removeAllListeners: () => {
       ipcRenderer.removeAllListeners("mpv-error");
       ipcRenderer.removeAllListeners("mpv-started");
+      ipcRenderer.removeAllListeners("mpv-stopped");
       ipcRenderer.removeAllListeners("mpv-paused");
       ipcRenderer.removeAllListeners("mpv-seek");
       ipcRenderer.removeAllListeners("mpv-state-updated");
@@ -61,6 +66,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
     seed: (meta: Meta) => ipcRenderer.invoke("torrent-seed", meta),
+    currentState: (infoHash: string) => ipcRenderer.invoke("torrent-current-state", infoHash),
     destroy: (infoHash: string) =>
       ipcRenderer.invoke("torrent-destroy", infoHash),
     destroyAll: () => ipcRenderer.invoke("torrent-destroy-all"),

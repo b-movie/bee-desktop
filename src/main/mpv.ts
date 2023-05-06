@@ -51,6 +51,10 @@ export class MPV {
       event.sender.send("mpv-paused");
     });
 
+    this.mpv.on("stopped", async () => {
+      event.sender.send("mpv-stopped");
+    });
+
     this.mpv.on("seek", async (position: { start: number; end: number }) => {
       event.sender.send("mpv-seek", position);
     });
@@ -65,6 +69,7 @@ export class MPV {
       log.warn("MPV", "quit by user");
       this.mpv = null;
       win.setFullScreen(false);
+      event.sender.send("mpv-stopped");
     });
   }
 
@@ -93,6 +98,10 @@ export class MPV {
 
   isRunning() {
     return this.mpv?.isRunning();
+  }
+
+  getProperty(property: string) {
+    return this.mpv?.getProperty(property);
   }
 
   goToPosition(position: number) {
