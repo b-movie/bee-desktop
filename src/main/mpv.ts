@@ -20,19 +20,20 @@ export class MPV {
     const configDir = path.join(__dirname, "libs/mpv/config");
 
     const win = BrowserWindow.fromWebContents(event.sender);
-    // let winID: number;
-    // let hbuf = win.getNativeWindowHandle();
-    //
-    // if (os.endianness() == "LE") {
-    //   winID = hbuf.readInt32LE();
-    // } else {
-    //   winID = hbuf.readInt32BE();
-    // }
+    let winID: number;
+    let hbuf = win.getNativeWindowHandle();
+
+    if (os.endianness() == "LE") {
+      winID = hbuf.readInt32LE();
+    } else {
+      winID = hbuf.readInt32BE();
+    }
 
     const defaultArgs = [
-      "--fullscreen",
+      // "--fullscreen",
       `--config-dir=${configDir}`,
       "--save-position-on-quit",
+      "--wid=" + winID,
     ];
     args = [...defaultArgs, ...args];
 
@@ -41,6 +42,9 @@ export class MPV {
     this.mpv.on("status", (status: any) => {
       log.info("MPV", status);
       event.sender.send("mpv-state-updated", status);
+      if (status.property == "fullscreen") {
+        win.setFullScreen(status.value);
+      }
     });
 
     this.mpv.on("started", async () => {

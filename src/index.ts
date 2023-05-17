@@ -39,6 +39,7 @@ const createWindow = () => {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
+    transparent: true,
     icon: "assets/logo.ico",
   });
 
@@ -94,6 +95,15 @@ const createWindow = () => {
 
   globalShortcut.register("CommandOrControl+R", function () {
     mainWindow.reload();
+  });
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (new URL(url).origin === WEBAPP_URL) {
+      return { action: "allow" };
+    } else {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
   });
 };
 
