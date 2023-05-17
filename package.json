@@ -36,13 +36,13 @@
     "@electron-forge/publisher-github": "^6.1.0",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
-    "@typescript-eslint/eslint-plugin": "^5.59.2",
-    "@typescript-eslint/parser": "^5.59.2",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
     "autoprefixer": "^10.4.14",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.0.0",
-    "electron": "24.2.0",
+    "electron": "24.3.0",
     "eslint": "^8.40.0",
     "eslint-plugin-import": "^2.25.0",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
@@ -60,7 +60,7 @@
   "dependencies": {
     "daisyui": "^2.51.6",
     "dlnacasts": "^0.1.0",
-    "electron-log": "^5.0.0-beta.23",
+    "electron-log": "^4.4.8",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "ip": "^1.1.8",
@@ -68,7 +68,7 @@
     "opensubtitles.com": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rum-torrent": "^0.1.30"
+    "rum-torrent": "^0.1.31"
   },
   "engines": {
     "node": ">=20.x"
