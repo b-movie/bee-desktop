@@ -39,7 +39,9 @@ const createWindow = () => {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
-    transparent: true,
+    fullscreen: true,
+    // https://www.electronjs.org/docs/latest/tutorial/window-customization#limitations-1
+    transparent: false,
     icon: "assets/logo.ico",
   });
 

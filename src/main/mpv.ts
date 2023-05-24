@@ -20,20 +20,20 @@ export class MPV {
     const configDir = path.join(__dirname, "libs/mpv/config");
 
     const win = BrowserWindow.fromWebContents(event.sender);
-    let winID: number;
-    let hbuf = win.getNativeWindowHandle();
-
-    if (os.endianness() == "LE") {
-      winID = hbuf.readInt32LE();
-    } else {
-      winID = hbuf.readInt32BE();
-    }
+    // let winID: number;
+    // let hbuf = win.getNativeWindowHandle();
+    //
+    // if (os.endianness() == "LE") {
+    //   winID = hbuf.readInt32LE();
+    // } else {
+    //   winID = hbuf.readInt32BE();
+    // }
 
     const defaultArgs = [
       // "--fullscreen",
       `--config-dir=${configDir}`,
       "--save-position-on-quit",
-      "--wid=" + winID,
+      // "--wid=" + winID,
     ];
     args = [...defaultArgs, ...args];
 
