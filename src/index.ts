@@ -13,6 +13,7 @@ import { MPV } from "./main/mpv";
 import Store from "electron-store";
 import log from "electron-log";
 import dlnacasts from "dlnacasts";
+import fs from "fs";
 
 const mpv = new MPV();
 const torrent = new Torrent();
@@ -39,7 +40,6 @@ const createWindow = () => {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
-    fullscreen: true,
     // https://www.electronjs.org/docs/latest/tutorial/window-customization#limitations-1
     transparent: false,
     icon: "assets/logo.ico",
@@ -135,6 +135,10 @@ app.on("ready", () => {
     mpv.quit();
   });
 
+  ipcMain.handle("fs-read-file", (_, path) => {
+    return fs.readFileSync(path);
+  });
+
   ipcMain.handle("mpv-play", (event, url, options) => {
     mpv.load(event, url, options);
   });
@@ -142,6 +146,18 @@ app.on("ready", () => {
   ipcMain.handle("mpv-go-to-position", (_, position) => {
     log.info("go to position", position);
     mpv.goToPosition(position);
+  });
+
+  ipcMain.handle("mpv-add-subtitles", (_, file, flag, title, lang) => {
+    return mpv.addSubtitles(file, flag, title, lang);
+  });
+
+  ipcMain.handle("mpv-observe-property", (_, property) => {
+    return mpv.observeProperty(property);
+  });
+
+  ipcMain.handle("mpv-unobserve-property", (_, property) => {
+    return mpv.unobserveProperty(property);
   });
 
   ipcMain.handle("mpv-get-time-position", () => {

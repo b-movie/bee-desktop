@@ -42,9 +42,9 @@ export class MPV {
     this.mpv.on("status", (status: any) => {
       log.info("MPV", status);
       event.sender.send("mpv-state-updated", status);
-      if (status.property == "fullscreen") {
-        win.setFullScreen(status.value);
-      }
+      // if (status.property == "fullscreen") {
+      //   win.setFullScreen(status.value);
+      // }
     });
 
     this.mpv.on("started", async () => {
@@ -102,6 +102,18 @@ export class MPV {
 
   isRunning() {
     return this.mpv?.isRunning();
+  }
+
+  addSubtitles(file: string, flag?: string, title?: string, lang?: string) {
+    this.mpv?.addSubtitles(file, flag, title, lang);
+  }
+
+  observeProperty(property: string) {
+    return this.mpv?.observeProperty(property);
+  }
+
+  unobserveProperty(property: string) {
+    return this.mpv?.unobserveProperty(property);
   }
 
   getProperty(property: string) {

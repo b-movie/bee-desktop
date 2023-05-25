@@ -12,6 +12,9 @@ contextBridge.exposeInMainWorld("__BEE__", {
     platform: "desktop",
     version: require("../package.json").version,
   },
+  fs: {
+    readFile: (path: string) => ipcRenderer.invoke("fs-read-file", path),
+  },
   mpv: {
     play: (url: string, options: string[] = []) =>
       ipcRenderer.invoke("mpv-play", url, options),
@@ -19,6 +22,15 @@ contextBridge.exposeInMainWorld("__BEE__", {
     isRunning: () => ipcRenderer.invoke("mpv-is-running"),
     goToPosition: (position: number) => {
       ipcRenderer.invoke("mpv-go-to-position", position);
+    },
+    addSubtitles: (file: string, flag: string, title: string, lang: string) => {
+      ipcRenderer.invoke("mpv-add-subtitles", file, flag, title, lang);
+    },
+    observeProperty: (property: string) => {
+      ipcRenderer.invoke("mpv-observe-property", property);
+    },
+    unobserveProperty: (property: string) => {
+      ipcRenderer.invoke("mpv-unobserve-property", property);
     },
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
       ipcRenderer.on("mpv-error", callback),
