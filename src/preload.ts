@@ -4,9 +4,14 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
 contextBridge.exposeInMainWorld("__BEE__", {
   cast: {
-    players: () => ipcRenderer.invoke("cast-players"),
-    play: (url: string, host: string, options: Object = {}) =>
-      ipcRenderer.invoke("cast-play", url, host, options),
+    dlna: {
+      players: () => ipcRenderer.invoke("dlnacasts-players"),
+      play: (url: string) => ipcRenderer.invoke("dlnacasts-play", url),
+    },
+    chrome: {
+      players: () => ipcRenderer.invoke("chromecasts-players"),
+      play: (url: string) => ipcRenderer.invoke("chromecasts-play", url),
+    }
   },
   client: {
     platform: "desktop",
