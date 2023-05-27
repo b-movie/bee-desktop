@@ -30,9 +30,6 @@ export class Torrent {
         },
       });
       this.client = await RumTorrent.getClient();
-      this.client.on("error", (error: ErrorEvent) => {
-        log.error(error);
-      });
     }
 
     return this.client ? true : false;
@@ -61,6 +58,16 @@ export class Torrent {
       });
     }
 
+    this.client.on("torrent", (torrent: any) => {
+      log.debug("torrent ready");
+      torrent.files[meta.fileIdx]?.select(1);
+    });
+
+    this.client.on("error", (error: ErrorEvent) => {
+      log.error(error);
+      event.sender.send("torrent-error", error);
+    });
+
     // clear previous timer
     if (this.timer) clearInterval(this.timer);
 
@@ -79,6 +86,15 @@ export class Torrent {
     this.client.torrents.forEach((torrent: any) => {
       torrent.destroy();
     });
+  }
+
+  setPriority(infoHash: string, fileIndex: number, priority: number) {
+    const torrent = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+    if (!torrent) return;
+
+    torrent.files[fileIndex].select(priority);
   }
 
   destroy(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
@@ -107,6 +123,7 @@ export class Torrent {
         length: f.length,
         downloaded: f.downloaded,
         progress: f.progress,
+        priority: f.priority,
         streamUrl: `http://${ip.address() || "localhost"}:${
           this.client._server.server.address().port
         }/rum-pt/${infoHash}/${toUnixPath(f.path)}`,

@@ -47,7 +47,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
     onTimePositionUpdated: (
       callback: (event: IpcRendererEvent, time: number) => void
     ) => ipcRenderer.on("mpv-time-position-updated", callback),
-    getProperty: (property: string) => ipcRenderer.invoke("mpv-get-property", property),
+    getProperty: (property: string) =>
+      ipcRenderer.invoke("mpv-get-property", property),
     getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
     getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
@@ -78,14 +79,24 @@ contextBridge.exposeInMainWorld("__BEE__", {
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
     seed: (meta: Meta) => ipcRenderer.invoke("torrent-seed", meta),
-    currentState: (infoHash: string) => ipcRenderer.invoke("torrent-current-state", infoHash),
+    currentState: (infoHash: string) =>
+      ipcRenderer.invoke("torrent-current-state", infoHash),
+    setPriority: (infoHash: string, fileIndex: number, priority: number) =>
+      ipcRenderer.invoke("torrent-set-priority", infoHash, fileIndex, priority),
     destroy: (infoHash: string) =>
       ipcRenderer.invoke("torrent-destroy", infoHash),
     destroyAll: () => ipcRenderer.invoke("torrent-destroy-all"),
+    onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
+      ipcRenderer.on("torrent-error", callback),
+    removeErrorListener: () => ipcRenderer.removeAllListeners("torrent-error"),
     onStateUpdated: (
       callback: (event: IpcRendererEvent, state: Torrent) => void
     ) => ipcRenderer.on("torrent-state-updated", callback),
     removeStateUpdatedListener: () =>
       ipcRenderer.removeAllListeners("torrent-state-updated"),
+    removeAllListeners: () => {
+      ipcRenderer.removeAllListeners("torrent-error");
+      ipcRenderer.removeAllListeners("torrent-state-updated");
+    },
   },
 });

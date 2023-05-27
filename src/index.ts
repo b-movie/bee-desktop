@@ -125,6 +125,10 @@ app.on("ready", () => {
     torrent.state(infoHash);
   });
 
+  ipcMain.handle("torrent-set-priority", (_, infoHash, fileIdx, priority) => {
+    torrent.setPriority(infoHash, fileIdx, priority);
+  });
+
   ipcMain.handle("torrent-destroy-all", () => {
     torrent.destroyAll();
     mpv.quit();
