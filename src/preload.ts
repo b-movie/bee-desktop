@@ -6,12 +6,26 @@ contextBridge.exposeInMainWorld("__BEE__", {
   cast: {
     dlna: {
       players: () => ipcRenderer.invoke("dlnacasts-players"),
-      play: (url: string) => ipcRenderer.invoke("dlnacasts-play", url),
+      play: (url: string, host: string, options: Object) =>
+        ipcRenderer.invoke("dlnacasts-play", url, host, options),
+      onStatus: (callback: (event: IpcRendererEvent, status: any) => void) => {
+        ipcRenderer.on("dlnacasts-player-status", callback);
+      },
+      removeAllListeners: () => {
+        ipcRenderer.removeAllListeners("dlnacasts-player-status");
+      },
     },
     chrome: {
       players: () => ipcRenderer.invoke("chromecasts-players"),
-      play: (url: string) => ipcRenderer.invoke("chromecasts-play", url),
-    }
+      play: (url: string, host: string, options: Object) =>
+        ipcRenderer.invoke("chromecasts-play", url, host, options),
+      onStatus: (callback: (event: IpcRendererEvent, status: any) => void) => {
+        ipcRenderer.on("chromecasts-player-status", callback);
+      },
+      removeAllListeners: () => {
+        ipcRenderer.removeAllListeners("chromecasts-player-status");
+      },
+    },
   },
   client: {
     platform: "desktop",
@@ -84,6 +98,9 @@ contextBridge.exposeInMainWorld("__BEE__", {
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
     seed: (meta: Meta) => ipcRenderer.invoke("torrent-seed", meta),
+    summary: () => ipcRenderer.invoke("torrent-summary"),
+    torrentFile: (infoHash: string) =>
+      ipcRenderer.invoke("torrent-torrent-file", infoHash),
     currentState: (infoHash: string) =>
       ipcRenderer.invoke("torrent-current-state", infoHash),
     setPriority: (infoHash: string, fileIndex: number, priority: number) =>

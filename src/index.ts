@@ -121,6 +121,14 @@ app.on("ready", () => {
     torrent.seed(event, meta, ...args)
   );
 
+  ipcMain.handle("torrent-summary", () => {
+    return torrent.summary();
+  });
+
+  ipcMain.handle("torrent-torrent-file", (_, infoHash) => {
+    torrent.torrentFile(infoHash);
+  });
+
   ipcMain.handle("torrent-current-state", (_, infoHash) => {
     torrent.state(infoHash);
   });
@@ -186,25 +194,36 @@ app.on("ready", () => {
 
   ipcMain.handle("dlnacasts-players", () => {
     dlnacasts.update();
-    return dlnacasts.players;
+    return dlnacasts.players.map((p: any) => {
+      return { name: p.name, host: p.host };
+    });
   });
 
   ipcMain.handle("dlnacasts-play", (_event, url, host, options = {}) => {
-    const player = dlnacasts.update().players.find((p: any) => p.host === host);
+    dlnacasts.update();
+    const player = dlnacasts.players.find((p: any) => p.host === host);
+    if (!player) return;
     player.play(url, options);
   });
 
   ipcMain.handle("chromecasts-players", () => {
     chromecasts.update();
-    log.info(chromecasts);
-    return chromecasts.players;
+    return chromecasts.players.map((p: any) => {
+      return { name: p.name, host: p.host };
+    });
   });
 
-  ipcMain.handle("chromecasts-play", (_event, url, host, options = {}) => {
-    const player = chromecasts
-      .update()
-      .players.find((p: any) => p.host === host);
-    player.play(url, options);
+  ipcMain.handle("chromecasts-play", (event, url, host, options = {}) => {
+    log.debug("chromecasts-play", url, host, options);
+    chromecasts.update();
+    const player = chromecasts.players.find((p: any) => p.host === host);
+    if (!player) return;
+
+    player.play(url, options, () => {
+      player.on("status", (status: any) => {
+        event.sender.send("chromecasts-player-status", status);
+      });
+    });
   });
 
   ipcMain.handle("shell-open-external", (_event, url) => {

@@ -42,14 +42,14 @@ export class Torrent {
     this.client.torrents.forEach((t: any) => {
       if (t.infoHash === meta.infoHash) {
         existedTorrent = t;
-      } else {
-        t.destroy();
       }
     });
 
     if (existedTorrent) {
       log.warn(`Torrent already added: ${meta.infoHash}`);
-      log.warn(`Torrent progress: ${existedTorrent.progress}`);
+      log.warn(
+        `Torrent progress: ${(existedTorrent.progress * 100).toFixed(2)}%`
+      );
       if (existedTorrent.paused) existedTorrent.resume();
     } else {
       const parsedTorrent = await RumTorrent.parseTorrent(meta.infoHash);
@@ -59,7 +59,8 @@ export class Torrent {
     }
 
     this.client.on("torrent", (torrent: any) => {
-      log.debug("torrent ready");
+      log.debug(`torrent ${torrent.infoHash} ready`);
+      log.debug(`priority file ${torrent.files[meta.fileIdx]?.name}`);
       torrent.files[meta.fileIdx]?.select(1);
     });
 
@@ -106,16 +107,12 @@ export class Torrent {
     torrent?.destroy();
   }
 
-  state(infoHash: string) {
-    const torrent: any = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
-    );
-
+  torrentState(torrent: any) {
     return {
       name: torrent?.name,
       infoHash: torrent?.infoHash,
       magnetURI: torrent?.progress,
-      torrentFile: torrent?.torrentFile,
+      // torrentFile: torrent?.torrentFile,
       announce: torrent?.announce,
       files: torrent?.files?.map((f: any) => ({
         name: f.name,
@@ -126,7 +123,7 @@ export class Torrent {
         priority: f.priority,
         streamUrl: `http://${ip.address() || "localhost"}:${
           this.client._server.server.address().port
-        }/rum-pt/${infoHash}/${toUnixPath(f.path)}`,
+        }/rum-pt/${torrent.infoHash}/${toUnixPath(f.path)}`,
       })),
       timeRemaining: torrent?.timeRemaining,
       received: torrent?.received,
@@ -146,5 +143,24 @@ export class Torrent {
       createdBy: torrent?.createdBy,
       comment: torrent?.comment,
     };
+  }
+
+  torrentFile(infoHash: string) {
+    const torrent: any = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+    return torrent?.torrentFile;
+  }
+
+  state(infoHash: string) {
+    const torrent: any = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+
+    return this.torrentState(torrent);
+  }
+
+  summary() {
+    return this.client.torrents.map((t: any) => this.torrentState(t));
   }
 }
