@@ -91,6 +91,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
   shell: {
     openExternal: (url: string) =>
       ipcRenderer.invoke("shell-open-external", url),
+    openPath: (path: string) => ipcRenderer.invoke("shell-open-path", path),
   },
   store: {
     get: (key: string) => ipcRenderer.invoke("store-get", key),
