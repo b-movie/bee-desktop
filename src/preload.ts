@@ -16,14 +16,22 @@ contextBridge.exposeInMainWorld("__BEE__", {
       },
     },
     chrome: {
-      players: () => ipcRenderer.invoke("chromecasts-players"),
-      play: (url: string, host: string, options: Object) =>
-        ipcRenderer.invoke("chromecasts-play", url, host, options),
+      devices: () => ipcRenderer.invoke("chromecast-devices"),
+      play: (host: string, media: Object, options: Object) =>
+        ipcRenderer.invoke("chromecast-play", host, media, options),
+      pause: (host: string) => ipcRenderer.invoke("chromecast-pause", host),
+      resume: (host: string) => ipcRenderer.invoke("chromecast-resume", host),
+      stop: (host: string) => ipcRenderer.invoke("chromecast-stop", host),
+      close: (host: string) => ipcRenderer.invoke("chromecast-close", host),
+      currentTime: (host: string) =>
+        ipcRenderer.invoke("chromecast-current-time", host),
+      currentStatus: (host: string) =>
+        ipcRenderer.invoke("chromecast-current-status", host),
       onStatus: (callback: (event: IpcRendererEvent, status: any) => void) => {
-        ipcRenderer.on("chromecasts-player-status", callback);
+        ipcRenderer.on("chromecast-device-status", callback);
       },
       removeAllListeners: () => {
-        ipcRenderer.removeAllListeners("chromecasts-player-status");
+        ipcRenderer.removeAllListeners("chromecast-device-status");
       },
     },
   },
@@ -37,6 +45,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
   mpv: {
     play: (url: string, options: string[] = []) =>
       ipcRenderer.invoke("mpv-play", url, options),
+    pause: () => ipcRenderer.invoke("mpv-pause"),
+    resume: () => ipcRenderer.invoke("mpv-resume"),
     quit: () => ipcRenderer.invoke("mpv-quit"),
     isRunning: () => ipcRenderer.invoke("mpv-is-running"),
     goToPosition: (position: number) => {
@@ -52,35 +62,34 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.invoke("mpv-unobserve-property", property);
     },
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
-      ipcRenderer.on("mpv-error", callback),
+      ipcRenderer.on("mpv-on-error", callback),
     onStarted: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-started", callback),
+      ipcRenderer.on("mpv-on-started", callback),
     onPaused: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-paused", callback),
+      ipcRenderer.on("mpv-on-paused", callback),
     onStopped: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-stopped", callback),
+      ipcRenderer.on("mpv-on-stopped", callback),
     onSeek: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-seek", callback),
-    onStateUpdated: (callback: (event: IpcRendererEvent, state: any) => void) =>
-      ipcRenderer.on("mpv-state-updated", callback),
-    onTimePositionUpdated: (
+      ipcRenderer.on("mpv-on-seek", callback),
+    onStatus: (callback: (event: IpcRendererEvent, status: any) => void) =>
+      ipcRenderer.on("mpv-on-status", callback),
+    onTimePosition: (
       callback: (event: IpcRendererEvent, time: number) => void
-    ) => ipcRenderer.on("mpv-time-position-updated", callback),
+    ) => ipcRenderer.on("mpv-on-time-position", callback),
     getProperty: (property: string) =>
       ipcRenderer.invoke("mpv-get-property", property),
     getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
     getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
-    removeStateUpdatedListener: () =>
-      ipcRenderer.removeAllListeners("mpv-state-updated"),
+    removeOnStatusListener: () => ipcRenderer.removeAllListeners("mpv-on-status"),
     removeAllListeners: () => {
-      ipcRenderer.removeAllListeners("mpv-error");
-      ipcRenderer.removeAllListeners("mpv-started");
-      ipcRenderer.removeAllListeners("mpv-stopped");
-      ipcRenderer.removeAllListeners("mpv-paused");
-      ipcRenderer.removeAllListeners("mpv-seek");
-      ipcRenderer.removeAllListeners("mpv-state-updated");
-      ipcRenderer.removeAllListeners("mpv-time-position-updated");
+      ipcRenderer.removeAllListeners("mpv-on-error");
+      ipcRenderer.removeAllListeners("mpv-on-started");
+      ipcRenderer.removeAllListeners("mpv-on-stopped");
+      ipcRenderer.removeAllListeners("mpv-on-paused");
+      ipcRenderer.removeAllListeners("mpv-on-seek");
+      ipcRenderer.removeAllListeners("mpv-on-status");
+      ipcRenderer.removeAllListeners("mpv-on-time-position");
     },
   },
   opensubtitles: {

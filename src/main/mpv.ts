@@ -41,39 +41,34 @@ export class MPV {
 
     this.mpv.on("status", (status: any) => {
       log.info("MPV", status);
-      event.sender.send("mpv-state-updated", status);
-      // if (status.property == "fullscreen") {
-      //   win.setFullScreen(status.value);
-      // }
+      event.sender.send("mpv-on-status", status);
     });
 
     this.mpv.on("started", async () => {
-      event.sender.send("mpv-started");
+      event.sender.send("mpv-on-started");
     });
 
     this.mpv.on("paused", async () => {
-      event.sender.send("mpv-paused");
+      event.sender.send("mpv-on-paused");
     });
 
     this.mpv.on("stopped", async () => {
-      event.sender.send("mpv-stopped");
+      event.sender.send("mpv-on-stopped");
     });
 
     this.mpv.on("seek", async (position: { start: number; end: number }) => {
-      event.sender.send("mpv-seek", position);
+      event.sender.send("mpv-on-seek", position);
     });
 
     this.mpv.on("timeposition", async (timePosition: number) => {
-      log.info("MPV timeposition", timePosition);
-
-      event.sender.send("mpv-time-position-updated", timePosition);
+      event.sender.send("mpv-on-time-position", timePosition);
     });
 
     this.mpv.on("quit", () => {
       log.warn("MPV", "quit by user");
       this.mpv = null;
       win.setFullScreen(false);
-      event.sender.send("mpv-stopped");
+      event.sender.send("mpv-on-stopped");
     });
   }
 
@@ -93,6 +88,14 @@ export class MPV {
       log.error(err);
       event.sender.send("mpv-error", err);
     }
+  }
+
+  pause() {
+   this.mpv?.pause();
+  }
+
+  resume() {
+   this.mpv?.resume();
   }
 
   async quit() {

@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "airplayer": "github:webtorrent/airplayer#fix-security",
+    "chromecast-api": "^0.4.0",
     "chromecasts": "^1.10.2",
     "daisyui": "^2.51.6",
     "dlnacasts": "^0.1.0",
