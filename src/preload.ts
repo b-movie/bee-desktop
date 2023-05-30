@@ -23,15 +23,13 @@ contextBridge.exposeInMainWorld("__BEE__", {
       resume: (host: string) => ipcRenderer.invoke("chromecast-resume", host),
       stop: (host: string) => ipcRenderer.invoke("chromecast-stop", host),
       close: (host: string) => ipcRenderer.invoke("chromecast-close", host),
-      currentTime: (host: string) =>
-        ipcRenderer.invoke("chromecast-current-time", host),
       currentStatus: (host: string) =>
         ipcRenderer.invoke("chromecast-current-status", host),
       onStatus: (callback: (event: IpcRendererEvent, status: any) => void) => {
-        ipcRenderer.on("chromecast-device-status", callback);
+        ipcRenderer.on("chromecast-on-status", callback);
       },
       removeAllListeners: () => {
-        ipcRenderer.removeAllListeners("chromecast-device-status");
+        ipcRenderer.removeAllListeners("chromecast-on-status");
       },
     },
   },

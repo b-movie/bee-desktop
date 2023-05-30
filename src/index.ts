@@ -233,18 +233,13 @@ app.on("ready", () => {
     });
   });
 
-  ipcMain.handle("chromecast-play", (event, host, media = {}, options = {}) => {
+  ipcMain.handle("chromecast-play", (_, host, media = {}, options = {}) => {
     log.debug("chromecast-play", host, media, options);
     chromecast.update();
     const device = chromecast.devices.find((p: any) => p.host === host);
     if (!device) return;
 
-    device.play(media, options, () => {
-      device.on("status", (status: any) => {
-        log.debug("chromecast-device-status", status);
-        event.sender.send("chromecast-device-status", status);
-      });
-    });
+    device.play(media, options);
   });
 
   ipcMain.handle("chromecast-pause", (_event, host) => {
@@ -269,7 +264,7 @@ app.on("ready", () => {
     device.stop();
   });
 
-  ipcMain.handle("chromecast-current-status", async (_event, host) => {
+  ipcMain.handle("chromecast-current-status", async (event, host) => {
     const device = chromecast.devices.find((p: any) => p.host === host);
     if (!device) return;
 
@@ -277,19 +272,7 @@ app.on("ready", () => {
       if (err) return err;
 
       log.debug("chromecast-current-status", host, status);
-      return status;
-    });
-  });
-
-  ipcMain.handle("chromecast-current-time", (_event, host) => {
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.getCurrentTime((err: any, time: any) => {
-      if (err) return err;
-
-      log.debug("chromecast-current-status", host, time);
-      return time;
+      event.sender.send("chromecast-on-status", status);
     });
   });
 
