@@ -14,7 +14,7 @@ import Store from "electron-store";
 import log from "electron-log";
 import fs from "fs";
 
-const dlnacasts = require("dlnacasts")();
+const dlnacasts = require("dlnacasts2")();
 const ChromecastAPI = require("chromecast-api");
 const chromecast = new ChromecastAPI();
 const mpv = new MPV();
@@ -214,6 +214,7 @@ app.on("ready", () => {
 
   ipcMain.handle("dlnacasts-players", () => {
     dlnacasts.update();
+    log.debug("dlnacasts-players", dlnacasts.players);
     return dlnacasts.players.map((p: any) => {
       return { name: p.name, host: p.host };
     });

@@ -62,7 +62,7 @@
     "chromecast-api": "^0.4.0",
     "chromecasts": "^1.10.2",
     "daisyui": "^2.51.6",
-    "dlnacasts": "^0.1.0",
+    "dlnacasts2": "^0.2.0",
     "electron-log": "^4.4.8",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
