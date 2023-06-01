@@ -91,8 +91,10 @@ contextBridge.exposeInMainWorld("__BEE__", {
     },
   },
   opensubtitles: {
-    search: (query: string) =>
-      ipcRenderer.invoke("opensubtitles-search", query),
+    login: (username: string, password: string) =>
+      ipcRenderer.invoke("opensubtitles-search", username, password),
+    search: (options: Object) =>
+      ipcRenderer.invoke("opensubtitles-search", options),
     download: (id: string) => ipcRenderer.invoke("opensubtitles-download", id),
   },
   shell: {

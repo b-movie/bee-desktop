@@ -4,8 +4,9 @@ declare module "parse-torrent";
 declare module "create-torrent";
 declare module "node-mpv";
 declare module "webpack-permissions-plugin";
-declare module "dlnacasts";
-declare module "chromecasts";
+declare module "dlnacasts2";
+declare module "chromecast-api";
+declare module "opensubtitles.com";
 declare module "ip";
 
 type Meta = {

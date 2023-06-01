@@ -161,6 +161,8 @@ export class Torrent {
   }
 
   summary() {
+    if (!this.client) return [];
+
     return this.client.torrents.map((t: any) => this.torrentState(t));
   }
 }
