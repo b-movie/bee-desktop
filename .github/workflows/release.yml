@@ -22,4 +22,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
           OPENSUBTITLES_API_KEY: ${{ secrets.OPENSUBTITLES_API_KEY }}
-        run: yarn run publish
+        run: touch '.env'; echo "OPENSUBTITLES_API_KEY = $OPENSUBTITLES_API_KEY" > .env; yarn run publish
