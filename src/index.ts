@@ -92,9 +92,6 @@ const createWindow = () => {
       role: "about",
       submenu: [
         {
-          label: `v${require("../package.json").version}`,
-        },
-        {
           label: "Web",
           click: async () => {
             const { shell } = require("electron");
@@ -102,17 +99,28 @@ const createWindow = () => {
           },
         },
         {
-          label: "DevTools",
-          click: () => {
-            mainWindow.webContents.openDevTools();
-          },
+          label: "DEV",
+          submenu: [
+            {
+              label: "DevTools",
+              click: () => {
+                mainWindow.webContents.openDevTools();
+              },
+            },
+            {
+              label: "Github",
+              click: async () => {
+                const { shell } = require("electron");
+                await shell.openExternal(
+                  "https://github.com/b-movie/bee-desktop"
+                );
+              },
+            },
+          ],
         },
+        { type: "separator" },
         {
-          label: "Github",
-          click: async () => {
-            const { shell } = require("electron");
-            await shell.openExternal("https://github.com/b-movie/bee-desktop");
-          },
+          label: `v${require("../package.json").version}`,
         },
       ],
     },
