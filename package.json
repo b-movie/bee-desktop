@@ -72,7 +72,8 @@
     "opensubtitles.com": "https://github.com/an-lee/opensubtitles.com",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rum-torrent": "^0.1.31"
+    "rum-torrent": "^0.1.31",
+    "utp-native": "^2.5.3"
   },
   "engines": {
     "node": ">=20.x"
