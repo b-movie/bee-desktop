@@ -5959,9 +5959,9 @@ open@^8.0.9:
     is-docker "^2.1.1"
     is-wsl "^2.2.0"
 
-"opensubtitles.com@ssh://git@github.com:an-lee/opensubtitles.com.git":
+"opensubtitles.com@https://github.com/an-lee/opensubtitles.com":
   version "1.0.0"
-  resolved "ssh://git@github.com:an-lee/opensubtitles.com.git#b7babe003753ba5e62aa46b31a6e37c8024a8e81"
+  resolved "https://github.com/an-lee/opensubtitles.com#b7babe003753ba5e62aa46b31a6e37c8024a8e81"
   dependencies:
     got "^11.8.2"
 
