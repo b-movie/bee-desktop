@@ -157,6 +157,14 @@ app.on("ready", () => {
     torrent.seed(event, meta, ...args)
   );
 
+  ipcMain.handle("torrent-pause", (_, infoHash) => {
+    return torrent.pause(infoHash);
+  });
+
+  ipcMain.handle("torrent-resume", (_, infoHash) => {
+    return torrent.resume(infoHash);
+  });
+
   ipcMain.handle("torrent-summary", () => {
     return torrent.summary();
   });

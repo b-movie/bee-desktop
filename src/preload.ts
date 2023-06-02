@@ -108,6 +108,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
     seed: (meta: Meta) => ipcRenderer.invoke("torrent-seed", meta),
+    pause: (infoHash: String) => ipcRenderer.invoke("torrent-pause", infoHash),
+    resume: (infoHash: String) => ipcRenderer.invoke("torrent-resume", infoHash),
     summary: () => ipcRenderer.invoke("torrent-summary"),
     torrentFile: (infoHash: string) =>
       ipcRenderer.invoke("torrent-torrent-file", infoHash),

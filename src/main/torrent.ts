@@ -101,6 +101,24 @@ export class Torrent {
     }, 1500);
   }
 
+  pause(infoHash: string) {
+    const torrent = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+    if (!torrent) return;
+
+    torrent.pause();
+  }
+
+  resume(infoHash: string) {
+    const torrent = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+    if (!torrent) return;
+
+    torrent.pause();
+  }
+
   destroyAll() {
     if (!this.client) return;
 
