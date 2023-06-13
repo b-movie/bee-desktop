@@ -1,38 +1,17 @@
 import { IpcMainInvokeEvent } from "electron";
-import { torrent as RumTorrent } from "rum-torrent";
+import { TRACKERS, CACHE_DIR } from "./constants";
+import WebTorrent from "webtorrent";
 import log from "electron-log";
 import ip from "ip";
+import os from "os";
+import path from "path";
 
-// https://github.com/webtorrent/create-torrent/blob/master/index.js#L16
-const announceList = [
-  ["udp://tracker.leechers-paradise.org:6969"],
-  ["udp://tracker.coppersurfer.tk:6969"],
-  ["udp://tracker.empire-js.us:1337"],
-  ["udp://tracker.opentrackr.org:1337"],
-  ["udp://opentracker.i2p.rocks:6969"],
-  ["udp://tracker.openbittorrent.com:6969"],
-  ["udp://open.demonii.com:1337"],
-  ["udp://open.stealth.si:80"],
-  ["udp://exodus.desync.com:6969"],
-  ["udp://tracker.torrent.eu.org:451"],
-  ["udp://tracker.moeking.me:6969"],
-  ["udp://tracker.bitsearch.to:1337"],
-  ["udp://p4p.arenabg.com:1337"],
-  ["udp://explodie.org:6969"],
-  ["udp://tracker1.bt.moack.co.kr:80"],
-  ["udp://tracker.theoks.net:6969"],
-  ["udp://tracker.altrosky.nl:6969"],
-  ["udp://movies.zsw.ca:6969"],
-  ["https://opentracker.i2p.rocks:443"],
-  ["http://tracker.openbittorrent.com:80"],
-  ["https://tracker.tamersunion.org:443"],
-  ["https://tracker.moeblog.cn:443"],
-  ["https://tr.burnabyhighstar.com:443"],
-  ["wss://tracker.files.fm:7073/announce"],
-  ["ws://tracker.files.fm:7072"],
-  ["wss://tracker.btorrent.xyz"],
-  ["wss://tracker.openwebtorrent.com"],
-];
+const generatePortNumber = () => {
+  var min = 1024,
+    max = 65535;
+
+  return Math.floor(Math.random() * (max - min)) + min;
+};
 
 // fix windows path
 const toUnixPath = (path: string) =>
@@ -40,16 +19,16 @@ const toUnixPath = (path: string) =>
 
 export class Torrent {
   public client: any;
+  public server: any;
   private timer: NodeJS.Timer | null = null;
 
   async init() {
     if (!this.client) {
-      await RumTorrent.init({
-        callback: (state: any) => {
-          // log.debug(state);
-        },
+      this.client = new WebTorrent();
+      this.server = this.client.createServer({
+        pathname: "/bee",
       });
-      this.client = await RumTorrent.getClient();
+      this.server.listen(generatePortNumber());
     }
 
     return this.client ? true : false;
@@ -72,16 +51,19 @@ export class Torrent {
       );
       if (existedTorrent.paused) existedTorrent.resume();
     } else {
-      const parsedTorrent = await RumTorrent.parseTorrent(meta.infoHash);
-      await RumTorrent.seed(RumTorrent.toMagnetURI(parsedTorrent), {
-        announce: announceList,
+      this.client.add(meta.infoHash, {
+        path: CACHE_DIR,
+        announce: TRACKERS,
       });
     }
 
-    this.client.on("torrent", (torrent: any) => {
-      log.debug(`torrent ${torrent.infoHash} ready`);
-      log.debug(`priority file ${torrent.files[meta.fileIdx]?.name}`);
-      torrent.files[meta.fileIdx]?.select(1);
+    this.client.on("metadata", (torrent: any) => {
+      log.debug("select stream file only");
+      // deselect files, webtorrent api
+      // as of november 2016, need to remove all torrent,
+      //  then add wanted file, it's a bug: https://github.com/feross/webtorrent/issues/164
+      torrent.deselect(0, torrent.pieces.length - 1, false); // Remove default selection (whole torrent)
+      torrent.files[meta.fileIdx].select(); // Select only fileIdx
     });
 
     this.client.on("error", (error: ErrorEvent) => {
@@ -127,13 +109,22 @@ export class Torrent {
     });
   }
 
-  setPriority(infoHash: string, fileIndex: number, priority: number) {
+  deselectFile(infoHash: string, fileIdx: number) {
     const torrent = this.client.torrents.find(
       (t: any) => t.infoHash === infoHash
     );
     if (!torrent) return;
 
-    torrent.files[fileIndex].select(priority);
+    torrent.files[fileIdx].deselect();
+  }
+
+  selectFile(infoHash: string, fileIdx: number) {
+    const torrent = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+    if (!torrent) return;
+
+    torrent.files[fileIdx].select();
   }
 
   destroy(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
@@ -159,9 +150,10 @@ export class Torrent {
         downloaded: f.downloaded,
         progress: f.progress,
         priority: f.priority,
-        streamUrl: `http://${ip.address() || "localhost"}:${
-          this.client._server.server.address().port
-        }/rum-pt/${torrent.infoHash}/${toUnixPath(f.path)}`,
+        streamUrl:
+          `http://${ip.address() || "localhost"}:${
+            this.server.server.address().port
+          }` + f.streamURL,
       })),
       timeRemaining: torrent?.timeRemaining,
       received: torrent?.received,

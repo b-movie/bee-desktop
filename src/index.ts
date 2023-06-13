@@ -59,7 +59,10 @@ const createWindow = () => {
   mainWindow.loadURL(WEBAPP_URL);
 
   // Open the DevTools.
-  if (!app.isPackaged) mainWindow.webContents.openDevTools();
+  if (!app.isPackaged)
+    setTimeout(() => {
+      mainWindow.webContents.openDevTools();
+    }, 1000);
 
   const menu = Menu.buildFromTemplate([
     {
@@ -104,7 +107,9 @@ const createWindow = () => {
             {
               label: "DevTools",
               click: () => {
-                mainWindow.webContents.openDevTools();
+                setTimeout(() => {
+                  mainWindow.webContents.openDevTools();
+                }, 1000);
               },
             },
             {
@@ -177,8 +182,8 @@ app.on("ready", () => {
     torrent.state(infoHash);
   });
 
-  ipcMain.handle("torrent-set-priority", (_, infoHash, fileIdx, priority) => {
-    torrent.setPriority(infoHash, fileIdx, priority);
+  ipcMain.handle("torrent-select-file", (_, infoHash, fileIdx) => {
+    torrent.selectFile(infoHash, fileIdx);
   });
 
   ipcMain.handle("torrent-destroy-all", () => {

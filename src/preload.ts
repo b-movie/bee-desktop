@@ -115,8 +115,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.invoke("torrent-torrent-file", infoHash),
     currentState: (infoHash: string) =>
       ipcRenderer.invoke("torrent-current-state", infoHash),
-    setPriority: (infoHash: string, fileIndex: number, priority: number) =>
-      ipcRenderer.invoke("torrent-set-priority", infoHash, fileIndex, priority),
+    selectFile: (infoHash: string, fileIdx: number) =>
+      ipcRenderer.invoke("torrent-select-file", infoHash, fileIdx),
     destroy: (infoHash: string) =>
       ipcRenderer.invoke("torrent-destroy", infoHash),
     destroyAll: () => ipcRenderer.invoke("torrent-destroy-all"),
