@@ -5,7 +5,7 @@ import os from "os";
 import { existsSync } from "fs";
 import path from "path";
 
-export class MPV {
+export default class MPV {
   public mpv: any;
 
   init(event: IpcMainInvokeEvent, options: object = {}, args: string[] = []) {

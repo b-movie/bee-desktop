@@ -1,23 +1,11 @@
 import { IpcMainInvokeEvent } from "electron";
 import { TRACKERS, CACHE_DIR } from "./constants";
+import { generatePortNumber } from "./helpers";
 import WebTorrent from "webtorrent";
 import log from "electron-log";
 import ip from "ip";
-import os from "os";
-import path from "path";
 
-const generatePortNumber = () => {
-  var min = 1024,
-    max = 65535;
-
-  return Math.floor(Math.random() * (max - min)) + min;
-};
-
-// fix windows path
-const toUnixPath = (path: string) =>
-  path.replace(/[\\/]+/g, "/").replace(/^([a-zA-Z]+:|\.\/)/, "");
-
-export class Torrent {
+export default class Torrent {
   public client: any;
   public server: any;
   private timer: NodeJS.Timer | null = null;
@@ -51,20 +39,22 @@ export class Torrent {
       );
       if (existedTorrent.paused) existedTorrent.resume();
     } else {
-      this.client.add(meta.infoHash, {
-        path: CACHE_DIR,
-        announce: TRACKERS,
-      });
+      this.client.add(
+        meta.infoHash,
+        {
+          path: CACHE_DIR,
+          announce: TRACKERS,
+        },
+        (torrent: any) => {
+          log.debug("select stream file only");
+          // deselect files, webtorrent api
+          // as of november 2016, need to remove all torrent,
+          //  then add wanted file, it's a bug: https://github.com/feross/webtorrent/issues/164
+          torrent.deselect(0, torrent.pieces.length - 1, false); // Remove default selection (whole torrent)
+          torrent.files[meta.fileIdx].select(); // Select only fileIdx
+        }
+      );
     }
-
-    this.client.on("metadata", (torrent: any) => {
-      log.debug("select stream file only");
-      // deselect files, webtorrent api
-      // as of november 2016, need to remove all torrent,
-      //  then add wanted file, it's a bug: https://github.com/feross/webtorrent/issues/164
-      torrent.deselect(0, torrent.pieces.length - 1, false); // Remove default selection (whole torrent)
-      torrent.files[meta.fileIdx].select(); // Select only fileIdx
-    });
 
     this.client.on("error", (error: ErrorEvent) => {
       log.error(error);

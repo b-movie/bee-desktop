@@ -67,11 +67,13 @@
     "electron-log": "^4.4.8",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
+    "finalhandler": "^1.2.0",
     "ip": "^1.1.8",
     "node-mpv": "https://github.com/A-Julien/Node-MPV.git",
     "opensubtitles.com": "https://github.com/an-lee/opensubtitles.com",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "serve-static": "^1.15.0",
     "webtorrent": "^2.0.37"
   },
   "engines": {

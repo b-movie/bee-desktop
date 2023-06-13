@@ -3,6 +3,7 @@ import path from "path";
 
 export const OPENSUBTITLES_API_KEY = "6odoYlui4gEXjCYZyAB8tUxSDpDlfAMw";
 export const CACHE_DIR = path.join(os.tmpdir(), "BEE");
+export const SUBTITLE_CACHE_DIR = path.join(CACHE_DIR, "SubtitlesCache");
 export const TRACKERS = [
   "udp://tracker.opentrackr.org:1337/announce",
   "udp://opentracker.i2p.rocks:6969/announce",

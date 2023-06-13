@@ -79,7 +79,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
     getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
     getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
     removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
-    removeOnStatusListener: () => ipcRenderer.removeAllListeners("mpv-on-status"),
+    removeOnStatusListener: () =>
+      ipcRenderer.removeAllListeners("mpv-on-status"),
     removeAllListeners: () => {
       ipcRenderer.removeAllListeners("mpv-on-error");
       ipcRenderer.removeAllListeners("mpv-on-started");
@@ -105,11 +106,15 @@ contextBridge.exposeInMainWorld("__BEE__", {
   store: {
     get: (key: string) => ipcRenderer.invoke("store-get", key),
   },
+  subtitlesServer: {
+    serve: (path: string) => ipcRenderer.invoke("subtitles-server-serve", path),
+  },
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
     seed: (meta: Meta) => ipcRenderer.invoke("torrent-seed", meta),
     pause: (infoHash: String) => ipcRenderer.invoke("torrent-pause", infoHash),
-    resume: (infoHash: String) => ipcRenderer.invoke("torrent-resume", infoHash),
+    resume: (infoHash: String) =>
+      ipcRenderer.invoke("torrent-resume", infoHash),
     summary: () => ipcRenderer.invoke("torrent-summary"),
     torrentFile: (infoHash: string) =>
       ipcRenderer.invoke("torrent-torrent-file", infoHash),

@@ -1,7 +1,6 @@
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare module "webtorrent";
-declare module "parse-torrent";
-declare module "create-torrent";
+declare module "finalhandler";
 declare module "node-mpv";
 declare module "webpack-permissions-plugin";
 declare module "dlnacasts2";
