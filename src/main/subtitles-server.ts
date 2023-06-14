@@ -29,14 +29,17 @@ export default class SubtitlesServer {
     }
   }
 
-  serve(_path: string) {
+  serve(src: string) {
     if (!this.server) {
       this.init();
     }
 
-    const fileName = _path.split("/").pop();
+    const fileName = src.split("/").pop();
 
-    fs.copyFileSync(_path, path.join(SUBTITLE_CACHE_DIR, fileName));
+    const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
+    if (src != dest) {
+      fs.copyFileSync(src, dest);
+    }
 
     return `http://${ip.address()}:${this.server.address().port}/${fileName}`;
   }

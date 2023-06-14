@@ -39,6 +39,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
   },
   fs: {
     readFile: (path: string) => ipcRenderer.invoke("fs-read-file", path),
+    download: (url: string, path: string) =>
+      ipcRenderer.invoke("fs-download", url, path),
   },
   mpv: {
     play: (url: string, options: string[] = []) =>
@@ -107,6 +109,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
     get: (key: string) => ipcRenderer.invoke("store-get", key),
   },
   subtitlesServer: {
+    download: (url: string, fileName: string) =>
+      ipcRenderer.invoke("subtitles-server-download", url, fileName),
     serve: (path: string) => ipcRenderer.invoke("subtitles-server-serve", path),
   },
   torrent: {
