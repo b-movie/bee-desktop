@@ -1,13 +1,7 @@
 // polyfill for crypto
 globalThis.crypto = require("crypto");
 import "dotenv/config";
-import {
-  app,
-  BrowserWindow,
-  Menu,
-  globalShortcut,
-  shell,
-} from "electron";
+import { app, BrowserWindow, Menu, globalShortcut, shell } from "electron";
 import Torrent from "./main/torrent";
 import MPV from "./main/mpv";
 import ipcHandlers from "./main/ipc-handlers";
@@ -31,8 +25,10 @@ if (require("electron-squirrel-startup")) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 1024,
-    width: 1280,
+    height: 1080,
+    width: 1920,
+    minWidth: 1280,
+    minHeight: 720,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
@@ -119,7 +115,7 @@ const createWindow = () => {
       ],
     },
   ]);
-  Menu.setApplicationMenu(menu);
+  Menu.setApplicationMenu(null);
 
   globalShortcut.register("f5", function () {
     mainWindow.reload();

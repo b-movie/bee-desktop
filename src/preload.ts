@@ -61,36 +61,14 @@ contextBridge.exposeInMainWorld("__BEE__", {
     unobserveProperty: (property: string) => {
       ipcRenderer.invoke("mpv-unobserve-property", property);
     },
-    onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
-      ipcRenderer.on("mpv-on-error", callback),
-    onStarted: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-on-started", callback),
-    onPaused: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-on-paused", callback),
-    onStopped: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-on-stopped", callback),
-    onSeek: (callback: (event: IpcRendererEvent) => void) =>
-      ipcRenderer.on("mpv-on-seek", callback),
     onStatus: (callback: (event: IpcRendererEvent, status: any) => void) =>
       ipcRenderer.on("mpv-on-status", callback),
-    onTimePosition: (
-      callback: (event: IpcRendererEvent, time: number) => void
-    ) => ipcRenderer.on("mpv-on-time-position", callback),
     getProperty: (property: string) =>
       ipcRenderer.invoke("mpv-get-property", property),
     getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
     getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
-    removeErrorListener: () => ipcRenderer.removeAllListeners("mpv-error"),
-    removeOnStatusListener: () =>
-      ipcRenderer.removeAllListeners("mpv-on-status"),
     removeAllListeners: () => {
-      ipcRenderer.removeAllListeners("mpv-on-error");
-      ipcRenderer.removeAllListeners("mpv-on-started");
-      ipcRenderer.removeAllListeners("mpv-on-stopped");
-      ipcRenderer.removeAllListeners("mpv-on-paused");
-      ipcRenderer.removeAllListeners("mpv-on-seek");
       ipcRenderer.removeAllListeners("mpv-on-status");
-      ipcRenderer.removeAllListeners("mpv-on-time-position");
     },
   },
   opensubtitles: {
@@ -126,6 +104,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.invoke("torrent-current-state", infoHash),
     selectFile: (infoHash: string, fileIdx: number) =>
       ipcRenderer.invoke("torrent-select-file", infoHash, fileIdx),
+    deselectAll: (infoHash: string) =>
+      ipcRenderer.invoke("torrent-deselect-all", infoHash),
     destroy: (infoHash: string) =>
       ipcRenderer.invoke("torrent-destroy", infoHash),
     destroyAll: () => ipcRenderer.invoke("torrent-destroy-all"),

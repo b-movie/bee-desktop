@@ -45,30 +45,43 @@ export default class MPV {
     });
 
     this.mpv.on("started", async () => {
-      event.sender.send("mpv-on-started");
-    });
-
-    this.mpv.on("paused", async () => {
-      event.sender.send("mpv-on-paused");
+      this.mpv.observeProperty("sid");
+      event.sender.send("mpv-on-status", {
+        property: "event:started",
+        value: true,
+      });
     });
 
     this.mpv.on("stopped", async () => {
-      event.sender.send("mpv-on-stopped");
+      event.sender.send("mpv-on-status", {
+        property: "event:stopped",
+        value: true,
+      });
     });
 
     this.mpv.on("seek", async (position: { start: number; end: number }) => {
       event.sender.send("mpv-on-seek", position);
+      event.sender.send("mpv-on-status", {
+        property: "event:seek",
+        value: position,
+      });
     });
 
     this.mpv.on("timeposition", async (timePosition: number) => {
-      event.sender.send("mpv-on-time-position", timePosition);
+      event.sender.send("mpv-on-status", {
+        property: "time-pos",
+        value: timePosition,
+      });
     });
 
     this.mpv.on("quit", () => {
       log.warn("MPV", "quit by user");
       this.mpv = null;
       win.setFullScreen(false);
-      event.sender.send("mpv-on-stopped");
+      event.sender.send("mpv-on-status", {
+        property: "event:stopped",
+        value: true,
+      });
     });
   }
 
@@ -86,16 +99,19 @@ export default class MPV {
       }
     } catch (err) {
       log.error(err);
-      event.sender.send("mpv-error", err);
+      event.sender.send("mpv-on-status", {
+        property: "event:error",
+        value: err,
+      });
     }
   }
 
   pause() {
-   this.mpv?.pause();
+    this.mpv?.pause();
   }
 
   resume() {
-   this.mpv?.resume();
+    this.mpv?.resume();
   }
 
   async quit() {

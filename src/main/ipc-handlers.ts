@@ -50,6 +50,10 @@ const ipcHandlers = () => {
     torrent.state(infoHash);
   });
 
+  ipcMain.handle("torrent-deselect-all", (_, infoHash) => {
+    torrent.deselectAll(infoHash);
+  });
+
   ipcMain.handle("torrent-select-file", (_, infoHash, fileIdx) => {
     torrent.selectFile(infoHash, fileIdx);
   });

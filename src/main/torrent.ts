@@ -99,6 +99,15 @@ export default class Torrent {
     });
   }
 
+  deselectAll(infoHash: string) {
+    const torrent = this.client.torrents.find(
+      (t: any) => t.infoHash === infoHash
+    );
+    if (!torrent) return;
+
+    torrent.deselect(0, torrent.pieces.length - 1, false); // Remove default selection (whole torrent)
+  }
+
   deselectFile(infoHash: string, fileIdx: number) {
     const torrent = this.client.torrents.find(
       (t: any) => t.infoHash === infoHash
