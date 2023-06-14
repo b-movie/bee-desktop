@@ -110,16 +110,13 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.invoke("torrent-destroy", infoHash),
     destroyAll: () => ipcRenderer.invoke("torrent-destroy-all"),
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
-      ipcRenderer.on("torrent-error", callback),
-    removeErrorListener: () => ipcRenderer.removeAllListeners("torrent-error"),
-    onStateUpdated: (
+      ipcRenderer.on("torrent-on-error", callback),
+    onState: (
       callback: (event: IpcRendererEvent, state: Torrent) => void
-    ) => ipcRenderer.on("torrent-state-updated", callback),
-    removeStateUpdatedListener: () =>
-      ipcRenderer.removeAllListeners("torrent-state-updated"),
+    ) => ipcRenderer.on("torrent-on-state", callback),
     removeAllListeners: () => {
-      ipcRenderer.removeAllListeners("torrent-error");
-      ipcRenderer.removeAllListeners("torrent-state-updated");
+      ipcRenderer.removeAllListeners("torrent-on-error");
+      ipcRenderer.removeAllListeners("torrent-on-state");
     },
   },
 });

@@ -58,7 +58,7 @@ export default class Torrent {
 
     this.client.on("error", (error: ErrorEvent) => {
       log.error(error);
-      event.sender.send("torrent-error", error);
+      event.sender.send("torrent-on-error", error);
     });
 
     // clear previous timer
@@ -69,7 +69,7 @@ export default class Torrent {
       // avoid js error when window is closed
       if (!event.sender || event.sender.isDestroyed()) return;
 
-      event.sender.send("torrent-state-updated", this.state(meta.infoHash));
+      event.sender.send("torrent-on-state", this.state(meta.infoHash));
     }, 1500);
   }
 
