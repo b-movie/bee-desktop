@@ -38,7 +38,7 @@ export default class Torrent {
         `Torrent progress: ${(existedTorrent.progress * 100).toFixed(2)}%`
       );
       if (existedTorrent.paused) existedTorrent.resume();
-      existedTorrent.files[meta.fileIdx].select(); // Select only fileIdx
+      existedTorrent.files[meta.fileIdx]?.select(); // Select only fileIdx
     } else {
       this.client.add(
         meta.infoHash,
@@ -52,7 +52,7 @@ export default class Torrent {
           // as of november 2016, need to remove all torrent,
           //  then add wanted file, it's a bug: https://github.com/feross/webtorrent/issues/164
           torrent.deselect(0, torrent.pieces.length - 1, false); // Remove default selection (whole torrent)
-          torrent.files[meta.fileIdx].select(); // Select only fileIdx
+          torrent.files[meta.fileIdx]?.select(); // Select only fileIdx
         }
       );
     }
@@ -124,7 +124,7 @@ export default class Torrent {
     );
     if (!torrent) return;
 
-    torrent.files[fileIdx].select();
+    torrent.files[fileIdx]?.select();
   }
 
   destroy(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
