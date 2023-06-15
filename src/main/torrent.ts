@@ -151,7 +151,7 @@ export default class Torrent {
         progress: f.progress,
         priority: f.priority,
         streamUrl:
-          `http://${ip.address() || "localhost"}:${
+          `http://localhost:${
             this.server.server.address().port
           }` + f.streamURL,
       })),
