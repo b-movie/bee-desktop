@@ -38,6 +38,7 @@ export default class Torrent {
         `Torrent progress: ${(existedTorrent.progress * 100).toFixed(2)}%`
       );
       if (existedTorrent.paused) existedTorrent.resume();
+      existedTorrent.files[meta.fileIdx].select(); // Select only fileIdx
     } else {
       this.client.add(
         meta.infoHash,
@@ -88,7 +89,7 @@ export default class Torrent {
     );
     if (!torrent) return;
 
-    torrent.pause();
+    torrent.resume();
   }
 
   destroyAll() {

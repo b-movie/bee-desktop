@@ -1,6 +1,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
+import { CACHE_DIR, SUBTITLE_CACHE_DIR, TRACKERS } from "./main/constants";
 
 contextBridge.exposeInMainWorld("__BEE__", {
   cast: {
@@ -78,6 +79,12 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.invoke("opensubtitles-search", options),
     download: (id: string) => ipcRenderer.invoke("opensubtitles-download", id),
   },
+  settings: {
+    refresh: () => ipcRenderer.invoke("settings-refresh"),
+    get: (key: string) => ipcRenderer.invoke("settings-get", key),
+    set: (key: string, value: any) =>
+      ipcRenderer.invoke("settings-set", key, value),
+  },
   shell: {
     openExternal: (url: string) =>
       ipcRenderer.invoke("shell-open-external", url),
@@ -111,9 +118,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
     destroyAll: () => ipcRenderer.invoke("torrent-destroy-all"),
     onError: (callback: (event: IpcRendererEvent, error: Error) => void) =>
       ipcRenderer.on("torrent-on-error", callback),
-    onState: (
-      callback: (event: IpcRendererEvent, state: Torrent) => void
-    ) => ipcRenderer.on("torrent-on-state", callback),
+    onState: (callback: (event: IpcRendererEvent, state: Torrent) => void) =>
+      ipcRenderer.on("torrent-on-state", callback),
     removeAllListeners: () => {
       ipcRenderer.removeAllListeners("torrent-on-error");
       ipcRenderer.removeAllListeners("torrent-on-state");

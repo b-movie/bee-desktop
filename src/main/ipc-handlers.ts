@@ -7,7 +7,7 @@ import Store from "electron-store";
 import log from "electron-log";
 import fs from "fs";
 import OpenSubtitles from "opensubtitles.com";
-import { OPENSUBTITLES_API_KEY, SUBTITLE_CACHE_DIR } from "./constants";
+import { OPENSUBTITLES_API_KEY, CACHE_DIR, SUBTITLE_CACHE_DIR, TRACKERS  } from "./constants";
 import { download } from "./helpers";
 import SubtitlesServer from "./subtitles-server";
 import ChromecastAPI from "chromecast-api";
@@ -232,6 +232,14 @@ const ipcHandlers = () => {
     const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
     await download(url, dest);
     return subtitlesServer.serve(dest);
+  });
+
+  ipcMain.handle("settings-refresh", () => {
+    return {
+      cacheDir: CACHE_DIR,
+      subtitlesCacheDir: SUBTITLE_CACHE_DIR,
+      trackers: TRACKERS,
+    };
   });
 };
 
