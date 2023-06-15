@@ -49,79 +49,13 @@ const createWindow = () => {
       mainWindow.webContents.openDevTools();
     }, 1000);
 
-  const menu = Menu.buildFromTemplate([
-    {
-      role: "appMenu",
-      label: "BEE",
-      submenu: [
-        {
-          label: "Home",
-          click: () => {
-            mainWindow.loadURL(WEBAPP_URL);
-          },
-        },
-        { role: "reload" },
-        { type: "separator" },
-        { role: "quit" },
-      ],
-    },
-    {
-      label: "Torrent",
-      submenu: [
-        {
-          label: "Dashboard",
-          click: () => {
-            mainWindow.loadURL(`${WEBAPP_URL}/torrents/dashboard`);
-          },
-        },
-      ],
-    },
-    {
-      role: "about",
-      submenu: [
-        {
-          label: "Web",
-          click: async () => {
-            const { shell } = require("electron");
-            await shell.openExternal("https://b.movie");
-          },
-        },
-        {
-          label: "DEV",
-          submenu: [
-            {
-              label: "DevTools",
-              click: () => {
-                setTimeout(() => {
-                  mainWindow.webContents.openDevTools();
-                }, 1000);
-              },
-            },
-            {
-              label: "Github",
-              click: async () => {
-                const { shell } = require("electron");
-                await shell.openExternal(
-                  "https://github.com/b-movie/bee-desktop"
-                );
-              },
-            },
-          ],
-        },
-        { type: "separator" },
-        {
-          label: `v${require("../package.json").version}`,
-        },
-      ],
-    },
-  ]);
   Menu.setApplicationMenu(null);
 
-  globalShortcut.register("f5", function () {
+  globalShortcut.register("f5", () => {
     mainWindow.reload();
   });
 
-  globalShortcut.register("CommandOrControl+R", function () {
+  globalShortcut.register("CommandOrControl+R", () => {
     mainWindow.reload();
   });
 
