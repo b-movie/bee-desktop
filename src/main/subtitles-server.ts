@@ -5,7 +5,6 @@ import { SUBTITLE_CACHE_DIR } from "./constants";
 import { generatePortNumber } from "./helpers";
 import finalhandler from "finalhandler";
 import serveStatic from "serve-static";
-import ip from "ip";
 import log from "electron-log";
 
 export default class SubtitlesServer {
@@ -41,6 +40,6 @@ export default class SubtitlesServer {
       fs.copyFileSync(src, dest);
     }
 
-    return `http://${ip.address()}:${this.server.address().port}/${fileName}`;
+    return `http://localhost:${this.server.address().port}/${fileName}`;
   }
 }

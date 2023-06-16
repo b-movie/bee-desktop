@@ -1,7 +1,6 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
-import { CACHE_DIR, SUBTITLE_CACHE_DIR, TRACKERS } from "./main/constants";
 
 contextBridge.exposeInMainWorld("__BEE__", {
   cast: {
@@ -37,6 +36,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
   client: {
     platform: "desktop",
     version: require("../package.json").version,
+    ip: () => ipcRenderer.invoke("client-ip"),
   },
   fs: {
     readFile: (path: string) => ipcRenderer.invoke("fs-read-file", path),

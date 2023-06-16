@@ -7,11 +7,17 @@ import Store from "electron-store";
 import log from "electron-log";
 import fs from "fs";
 import OpenSubtitles from "opensubtitles.com";
-import { OPENSUBTITLES_API_KEY, CACHE_DIR, SUBTITLE_CACHE_DIR, TRACKERS  } from "./constants";
+import {
+  OPENSUBTITLES_API_KEY,
+  CACHE_DIR,
+  SUBTITLE_CACHE_DIR,
+  TRACKERS,
+} from "./constants";
 import { download } from "./helpers";
 import SubtitlesServer from "./subtitles-server";
 import ChromecastAPI from "chromecast-api";
 import path from "path";
+import ip from "ip";
 
 const dlnacasts = require("dlnacasts2")();
 const chromecast = new ChromecastAPI();
@@ -240,6 +246,10 @@ const ipcHandlers = () => {
       subtitlesCacheDir: SUBTITLE_CACHE_DIR,
       trackers: TRACKERS,
     };
+  });
+
+  ipcMain.handle("client-ip", () => {
+    return ip.address();
   });
 };
 

@@ -1,5 +1,6 @@
 import os from "os";
 import path from "path";
+import ip from "ip";
 
 export const OPENSUBTITLES_API_KEY = "6odoYlui4gEXjCYZyAB8tUxSDpDlfAMw";
 export const CACHE_DIR = path.join(os.tmpdir(), "BEE");
@@ -28,3 +29,8 @@ export const TRACKERS = [
   "wss://tracker.files.fm:7073/announce",
   "ws://tracker.files.fm:7072/announce",
 ];
+export const DEFAULT_SETTINGS = {
+  cacheDir: CACHE_DIR,
+  subtitlesCacheDir: SUBTITLE_CACHE_DIR,
+  trackers: TRACKERS,
+};
