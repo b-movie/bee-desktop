@@ -1,7 +1,7 @@
 {
   "name": "bee-desktop",
   "productName": "BEE",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A desktop client for Bee",
   "main": ".webpack/main",
   "scripts": {
