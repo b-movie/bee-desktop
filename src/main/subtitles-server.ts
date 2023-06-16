@@ -33,13 +33,19 @@ export default class SubtitlesServer {
       this.init();
     }
 
-    const fileName = src.split("/").pop();
+    try {
+      fs.accessSync(src);
+      const fileName = path.basename(src);
 
-    const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
-    if (src != dest) {
-      fs.copyFileSync(src, dest);
+      const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
+      if (src != dest) {
+        fs.copyFileSync(src, dest);
+      }
+
+      return `http://localhost:${this.server.address().port}/${fileName}`;
+    } catch (err) {
+      log.error(err);
+      return null;
     }
-
-    return `http://localhost:${this.server.address().port}/${fileName}`;
   }
 }

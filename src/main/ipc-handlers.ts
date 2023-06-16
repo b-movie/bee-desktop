@@ -233,12 +233,19 @@ const ipcHandlers = () => {
     return subtitlesServer.serve(path);
   });
 
-  ipcMain.handle("subtitles-server-download", async (_event, url, fileName) => {
-    log.debug("subtitles-server-download", url);
-    const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
-    await download(url, dest);
-    return subtitlesServer.serve(dest);
-  });
+  ipcMain.handle(
+    "subtitles-server-download",
+    async (_event, url, options: { fileName?: string; format?: string }) => {
+      log.debug("subtitles-server-download", url);
+      try {
+        const dest = await download(url, SUBTITLE_CACHE_DIR, options.fileName);
+        return subtitlesServer.serve(dest);
+      } catch (err) {
+        log.error("subtitles-server-download", err);
+        return null;
+      }
+    }
+  );
 
   ipcMain.handle("settings-refresh", () => {
     return {
