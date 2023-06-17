@@ -16,11 +16,10 @@ import {
 import { download } from "./helpers";
 import SubtitlesServer from "./subtitles-server";
 import ChromecastAPI from "chromecast-api";
-import path from "path";
 import ip from "ip";
 
-const dlnacasts = require("dlnacasts2")();
 const chromecast = new ChromecastAPI();
+const dlnacasts = require("dlnacasts2")();
 const mpv = new MPV();
 const torrent = new Torrent();
 const store = new Store();
@@ -133,6 +132,9 @@ const ipcHandlers = () => {
 
   ipcMain.handle("dlnacasts-players", () => {
     dlnacasts.update();
+    dlnacasts.on("update", (player: any) => {
+      log.debug("dlnacasts-players", player);
+    });
     log.debug("dlnacasts-players", dlnacasts.players);
     return dlnacasts.players.map((p: any) => {
       return { name: p.name, host: p.host };
@@ -160,6 +162,13 @@ const ipcHandlers = () => {
     if (!device) return;
 
     device.play(media, options);
+  });
+
+  ipcMain.handle("chromecast-change-subtitle", (_event, host, index) => {
+    const device = chromecast.devices.find((p: any) => p.host === host);
+    if (!device) return;
+
+    device.changeSubtitles(index);
   });
 
   ipcMain.handle("chromecast-pause", (_event, host) => {
@@ -193,6 +202,7 @@ const ipcHandlers = () => {
 
       log.debug("chromecast-current-status", host, status);
       event.sender.send("chromecast-on-status", status);
+      return status;
     });
   });
 

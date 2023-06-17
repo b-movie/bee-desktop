@@ -1980,7 +1980,7 @@ caniuse-lite@^1.0.30001464, caniuse-lite@^1.0.30001502:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001502.tgz#f7e4a76eb1d2d585340f773767be1fefc118dca8"
   integrity sha512-AZ+9tFXw1sS0o0jcpJQIXvFTOB/xGiQ4OQ2t98QX3NDn2EZTSRBC801gxrsGgViuq2ak/NLkNgSNEPtCr5lfKg==
 
-castv2-client@1.2.0, castv2-client@^1.1.0:
+castv2-client@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/castv2-client/-/castv2-client-1.2.0.tgz#a9193b1a5448b8cb9a0415bd021c8811ed7b0544"
   integrity sha512-2diOsC0vSSxa3QEOgoGBy9fZRHzNXatHz464Kje2OpwQ7GM5vulyrD0gLFOQ1P4rgLAFsYiSGQl4gK402nEEuA==
@@ -2084,22 +2084,6 @@ chromecast-api@^0.4.0:
     node-ssdp "^4.0.0"
     xml2js "^0.4.23"
     youtube-remote "^1.0.0"
-
-chromecasts@^1.10.2:
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/chromecasts/-/chromecasts-1.10.2.tgz#30bdca13bc181d172e023ce0987ce453c94d3978"
-  integrity sha512-Pa5nrrCMWukBafWxQ8wwmeRuqs/6nVFAdhRXYcxpDePduAbZZ8lXNZhtGZ5/mmWI1rzrSR6tpRR9J3BtR84yUw==
-  dependencies:
-    castv2-client "^1.1.0"
-    debug "^2.1.3"
-    dns-txt "^2.0.2"
-    mime "^1.3.4"
-    multicast-dns "^7.2.4"
-    simple-get "^2.0.0"
-    thunky "^0.1.0"
-    xml2js "^0.4.8"
-  optionalDependencies:
-    node-ssdp "^2.2.0"
 
 chromium-pickle-js@^0.2.0:
   version "0.2.0"
@@ -5384,7 +5368,7 @@ multicast-dns@^6.0.1:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
 
-multicast-dns@^7.2.0, multicast-dns@^7.2.4, multicast-dns@^7.2.5:
+multicast-dns@^7.2.0, multicast-dns@^7.2.5:
   version "7.2.5"
   resolved "https://registry.yarnpkg.com/multicast-dns/-/multicast-dns-7.2.5.tgz#77eb46057f4d7adbd16d9290fa7299f6fa64cced"
   integrity sha512-2eznPJP8z2BFLX50tf0LuODrpINqP1RVIm/CObbTcBRITQgmC/TjcREF1NeTBzIcR5XO/ukWo+YHOjBbFwIupg==
@@ -5551,7 +5535,7 @@ node-releases@^2.0.12:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.12.tgz#35627cc224a23bfb06fb3380f2b3afaaa7eb1039"
   integrity sha512-QzsYKWhXTWx8h1kIvqfnC++o0pEmpRQA/aenALsL2F4pqNVr7YzcdMlDij5WBnwftRbJCNJL/O7zdKaxKPHqgQ==
 
-node-ssdp@^2.2.0, node-ssdp@^2.7.1:
+node-ssdp@^2.7.1:
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/node-ssdp/-/node-ssdp-2.9.1.tgz#2d6ba8e7eff9bf5b338564f91f7ac5d5cdddc55b"
   integrity sha512-yGUSsm7HKxcv1XU0X6BIMWaOl/SaXqrIhwZCdklmAzwjG6qt+hnJwzs+VigCuRMP+jhSyoVBvHnoc95VgxbcuQ==
@@ -6837,7 +6821,7 @@ simple-concat@^1.0.0:
   resolved "https://registry.yarnpkg.com/simple-concat/-/simple-concat-1.0.1.tgz#f46976082ba35c2263f1c8ab5edfe26c41c9552f"
   integrity sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==
 
-simple-get@^2.0.0, simple-get@^2.1.0:
+simple-get@^2.1.0:
   version "2.8.2"
   resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-2.8.2.tgz#5708fb0919d440657326cd5fe7d2599d07705019"
   integrity sha512-Ijd/rV5o+mSBBs4F/x9oDPtTx9Zb6X9brmnXvMW4J7IR15ngi9q5xxqWBKU744jTZiaXtxaPL7uHG6vtN8kUkw==

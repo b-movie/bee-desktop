@@ -25,6 +25,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
       close: (host: string) => ipcRenderer.invoke("chromecast-close", host),
       currentStatus: (host: string) =>
         ipcRenderer.invoke("chromecast-current-status", host),
+      changeSubtitle: (host: string, index: number) =>
+        ipcRenderer.invoke("chromecast-change-subtitle", host, index),
       onStatus: (callback: (event: IpcRendererEvent, status: any) => void) => {
         ipcRenderer.on("chromecast-on-status", callback);
       },
