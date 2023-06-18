@@ -28,6 +28,7 @@ export const mainConfig: Configuration = {
       "dlnacasts2": "commonjs dlnacasts2",
       "chromecast-api": "commonjs chromecast-api",
       "castv2-client": "commonjs castv2-client",
+      "airplay": "commonjs airplay",
     },
   ],
   plugins: [

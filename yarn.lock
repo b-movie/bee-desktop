@@ -1310,6 +1310,14 @@ aggregate-error@^3.0.0:
     plist "^2.0.1"
     reverse-http "^1.2.0"
 
+airplay@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/airplay/-/airplay-0.0.3.tgz#fe23a92c3ee31ce2d1af9059b6de2daa46497633"
+  integrity sha512-SvB5lTx+HmzDaGF3MN1paJtIVEEM1uMy1pVIF+obwOwes7DdZpLDxu9+b++lpIqecQ5+geD5ZccsLtIPB1iUZw==
+  dependencies:
+    mdns ">=0.0.7"
+    plist ">=0.2.1"
+
 "airplayer@github:webtorrent/airplayer#fix-security":
   version "2.0.0"
   resolved "https://codeload.github.com/webtorrent/airplayer/tar.gz/2c0da53adea3799090e62ffae30fd5825d6ad423"
@@ -1644,6 +1652,11 @@ binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
+
+bindings@~1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.2.1.tgz#14ad6113812d2d37d72e67b4cacb4bb726505f11"
+  integrity sha512-u4cBQNepWxYA55FunZSM7wMi55yQaN0otnhhilNoWHq0MfOfJeQx0v0mRRpolGOExPjZcl6FtB0BB8Xkb88F0g==
 
 bitfield@^4.0.0, bitfield@^4.1.0:
   version "4.1.0"
@@ -5114,6 +5127,14 @@ matcher@^3.0.0:
   dependencies:
     escape-string-regexp "^4.0.0"
 
+mdns@>=0.0.7:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/mdns/-/mdns-2.7.2.tgz#1629077b950e2a9bdb02e370d505ff4fa2ace0ff"
+  integrity sha512-NBOQT22DKvuNWVY7nKNbs6w9eGRyPwnc4ZjKOsCG2G/4wNt1+IyiHvc+5yhcAUZLG46cOY321YW7Ufz3lMtrhw==
+  dependencies:
+    bindings "~1.2.1"
+    nan "^2.14.0"
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
@@ -5384,6 +5405,11 @@ mz@^2.7.0:
     any-promise "^1.0.0"
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
+
+nan@^2.14.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.17.0.tgz#c0150a2368a182f033e9aa5195ec76ea41a199cb"
+  integrity sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==
 
 nanoid@^3.3.6:
   version "3.3.6"
@@ -6032,6 +6058,14 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
+plist@>=0.2.1, plist@^3.0.0, plist@^3.0.4, plist@^3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/plist/-/plist-3.0.6.tgz#7cfb68a856a7834bca6dbfe3218eb9c7740145d3"
+  integrity sha512-WiIVYyrp8TD4w8yCvyeIr+lkmrGRd5u0VbRnU+tP/aRLxP/YadJUYOMZJ/6hIa3oUyVCsycXvtNRgd5XBJIbiA==
+  dependencies:
+    base64-js "^1.5.1"
+    xmlbuilder "^15.1.1"
+
 plist@^2.0.1:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/plist/-/plist-2.1.0.tgz#57ccdb7a0821df21831217a3cad54e3e146a1025"
@@ -6040,14 +6074,6 @@ plist@^2.0.1:
     base64-js "1.2.0"
     xmlbuilder "8.2.2"
     xmldom "0.1.x"
-
-plist@^3.0.0, plist@^3.0.4, plist@^3.0.5:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/plist/-/plist-3.0.6.tgz#7cfb68a856a7834bca6dbfe3218eb9c7740145d3"
-  integrity sha512-WiIVYyrp8TD4w8yCvyeIr+lkmrGRd5u0VbRnU+tP/aRLxP/YadJUYOMZJ/6hIa3oUyVCsycXvtNRgd5XBJIbiA==
-  dependencies:
-    base64-js "^1.5.1"
-    xmlbuilder "^15.1.1"
 
 postcss-import@^15.1.0:
   version "15.1.0"

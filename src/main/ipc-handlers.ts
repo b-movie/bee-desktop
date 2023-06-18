@@ -194,8 +194,8 @@ const ipcHandlers = () => {
     return opensubtitles.download({ file_id: fileId });
   });
 
-  ipcMain.handle("subtitles-server-serve", (_event, path, options) => {
-    log.debug("subtitles-server-serve", path, options);
+  ipcMain.handle("subtitles-server-serve", (_event, path) => {
+    log.debug("subtitles-server-serve", path);
     return subtitlesServer.serve(path);
   });
 

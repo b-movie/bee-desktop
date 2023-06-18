@@ -5,6 +5,11 @@ export class GenericDevice {
   public interval: any = null;
   public status: any = {};
 
+  constructor(public device: any) {
+    if (!device) throw new Error("Device not found");
+    this.device = device;
+  }
+
   clearDeviceInterval() {
     if (this.interval) {
       clearInterval(this.interval);
@@ -15,13 +20,6 @@ export class GenericDevice {
 
 // Chromecast
 export class ChromecastDevice extends GenericDevice {
-  constructor(public device: any) {
-    super();
-
-    if (!device) throw new Error("Device not found");
-    this.device = device;
-  }
-
   play(media: CastMedia) {
     const { url, title, cover, subtitles, options } = media;
 
@@ -90,13 +88,6 @@ export class ChromecastDevice extends GenericDevice {
 
 // DLNA
 export class DlnaDevice extends GenericDevice {
-  constructor(public device: any) {
-    super();
-
-    if (!device) throw new Error("Device not found");
-    this.device = device;
-  }
-
   play(media: CastMedia) {
     const options = {
       title: media.title,
@@ -149,6 +140,60 @@ export class DlnaDevice extends GenericDevice {
       this.status = {};
     } catch (err) {
       log.error("dlna stop error:", err);
+    }
+  }
+}
+
+// Airplay
+export class AirplayDevice extends GenericDevice {
+  play(media: CastMedia) {
+    log.debug(
+      "airplay play:",
+      media.url.replace("localhost", ip.address()),
+      media.options?.startTime
+    );
+    this.device.play(
+      media.url.replace("localhost", ip.address()),
+      media.options?.startTime || 0
+    );
+
+    this.clearDeviceInterval();
+    this.interval = setInterval(() => {
+      this.device.playbackInfo((err: any, _: any, status: any) => {
+        if (err) return;
+        log.debug("airplay player fetch status:", status);
+        this.status = {
+          playerState: status.state?.toUpperCase(),
+          currentTime: status.position,
+        };
+      });
+    }, 1000);
+  }
+
+  pause() {
+    try {
+      this.device.pause();
+    } catch (err) {
+      log.error("ariplay pause error:", err);
+    }
+  }
+
+  resume() {
+    try {
+      this.device.resume();
+    } catch (err) {
+      log.error("ariplay resume error:", err);
+    }
+  }
+
+  stop() {
+    this.clearDeviceInterval();
+    try {
+      this.device.stop();
+      this.device.destroy();
+      this.status = {};
+    } catch (err) {
+      log.error("airplay stop error:", err);
     }
   }
 }
