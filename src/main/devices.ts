@@ -48,7 +48,11 @@ export class ChromecastDevice extends GenericDevice {
           if (err) return;
 
           this.status = status;
-          log.debug("chromecast player fetch status:", status.playerState, status.currentTime);
+          log.debug(
+            "chromecast player fetch status:",
+            status.playerState,
+            status.currentTime
+          );
         });
       } catch (err) {
         log.error("chromecast getStatus error:", err);
@@ -113,11 +117,6 @@ export class DlnaDevice extends GenericDevice {
     this.device.play(media.url.replace("localhost", ip.address()), options);
 
     this.clearDeviceInterval();
-    this.device.on("status", (status: any) => {
-      log.debug("dlna player on status:", status);
-      this.status = status;
-    });
-
     this.interval = setInterval(() => {
       this.device.status((err: any, status: any) => {
         if (err) return;
