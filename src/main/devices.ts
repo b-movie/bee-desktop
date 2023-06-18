@@ -5,7 +5,7 @@ export class GenericDevice {
   public interval: any = null;
   public status: any = {};
 
-  clearInterval() {
+  clearDeviceInterval() {
     if (this.interval) {
       clearInterval(this.interval);
       this.interval = null;
@@ -39,9 +39,8 @@ export class ChromecastDevice extends GenericDevice {
       options
     );
 
-    this.clearInterval();
+    this.clearDeviceInterval();
     this.interval = setInterval(() => {
-      log.debug("chromecast player", this.device?.player?.senderId);
       if (!this.device?.player) return;
 
       try {
@@ -49,6 +48,7 @@ export class ChromecastDevice extends GenericDevice {
           if (err) return;
 
           this.status = status;
+          log.debug("chromecast player fetch status:", status.playerState, status.currentTime);
         });
       } catch (err) {
         log.error("chromecast getStatus error:", err);
@@ -57,15 +57,23 @@ export class ChromecastDevice extends GenericDevice {
   }
 
   pause() {
-    this.device.pause();
+    try {
+      this.device.pause();
+    } catch (err) {
+      log.error("chromecast pause error:", err);
+    }
   }
 
   resume() {
-    this.device.resume();
+    try {
+      this.device.resume();
+    } catch (err) {
+      log.error("chromecast resume error:", err);
+    }
   }
 
   stop() {
-    this.clearInterval();
+    this.clearDeviceInterval();
 
     try {
       this.device.close();
@@ -104,7 +112,7 @@ export class DlnaDevice extends GenericDevice {
     );
     this.device.play(media.url.replace("localhost", ip.address()), options);
 
-    this.clearInterval();
+    this.clearDeviceInterval();
     this.device.on("status", (status: any) => {
       log.debug("dlna player on status:", status);
       this.status = status;
@@ -120,16 +128,28 @@ export class DlnaDevice extends GenericDevice {
   }
 
   pause() {
-    this.device.pause();
+    try {
+      this.device.pause();
+    } catch (err) {
+      log.error("dlna pause error:", err);
+    }
   }
 
   resume() {
-    this.device.resume();
+    try {
+      this.device.resume();
+    } catch (err) {
+      log.error("dlna resume error:", err);
+    }
   }
 
   stop() {
-    this.device.stop();
-    this.clearInterval();
-    this.status = {};
+    this.clearDeviceInterval();
+    try {
+      this.device.close();
+      this.status = {};
+    } catch (err) {
+      log.error("dlna stop error:", err);
+    }
   }
 }

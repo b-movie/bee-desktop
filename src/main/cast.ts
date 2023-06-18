@@ -44,10 +44,10 @@ export default class Cast {
     return this.devices;
   }
 
-  play(host: string, media: CastMedia) {
+  async play(host: string, media: CastMedia) {
     log.debug("cast-play:", host, media);
 
-    this.device?.stop();
+    await this.device?.stop();
 
     const device = this.devices.find((device) => device.host === host);
     if (!device) throw new Error("Device not found");
@@ -74,9 +74,9 @@ export default class Cast {
     this.device?.resume();
   }
 
-  stop() {
+  async stop() {
     log.debug("cast-stop", this.device?.device?.host);
-    this.device?.stop();
+    await this.device?.stop();
   }
 
   currentStatus() {
