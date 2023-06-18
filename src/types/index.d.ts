@@ -55,3 +55,20 @@ type TorrentFile = {
   progress: number;
   streamUrl: string;
 };
+
+type CastMedia = {
+  url: string;
+  title: string;
+  cover?: {
+    title?: string;
+    url: string;
+  };
+  subtitles?: {
+    url: string;
+    name?: string;
+    lang?: string;
+  }[];
+  options?: {
+    startTime?: number;
+  };
+};

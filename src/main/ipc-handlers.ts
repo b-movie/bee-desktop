@@ -3,6 +3,7 @@ import "dotenv/config";
 import { ipcMain, shell } from "electron";
 import Torrent from "./torrent";
 import MPV from "./mpv";
+import Cast from "./cast";
 import Store from "electron-store";
 import log from "electron-log";
 import fs from "fs";
@@ -15,11 +16,9 @@ import {
 } from "./constants";
 import { download } from "./helpers";
 import SubtitlesServer from "./subtitles-server";
-import ChromecastAPI from "chromecast-api";
 import ip from "ip";
 
-const chromecast = new ChromecastAPI();
-const dlnacasts = require("dlnacasts2")();
+const cast = new Cast();
 const mpv = new MPV();
 const torrent = new Torrent();
 const store = new Store();
@@ -29,6 +28,7 @@ const opensubtitles = new OpenSubtitles({
 const subtitlesServer = new SubtitlesServer();
 
 const ipcHandlers = () => {
+  // TORRENT
   ipcMain.handle("torrent-init", () => torrent.init());
 
   ipcMain.handle("torrent-seed", (event, meta, ...args) =>
@@ -73,6 +73,7 @@ const ipcHandlers = () => {
     mpv.quit();
   });
 
+  // FS
   ipcMain.handle("fs-read-file", (_, path) => {
     return fs.readFileSync(path);
   });
@@ -81,6 +82,7 @@ const ipcHandlers = () => {
     return download(url, path);
   });
 
+  // MPV
   ipcMain.handle("mpv-play", (event, url, options) => {
     mpv.load(event, url, options);
   });
@@ -130,89 +132,41 @@ const ipcHandlers = () => {
     mpv.quit();
   });
 
-  ipcMain.handle("dlnacasts-players", () => {
-    dlnacasts.update();
-    dlnacasts.on("update", (player: any) => {
-      log.debug("dlnacasts-players", player);
-    });
-    log.debug("dlnacasts-players", dlnacasts.players);
-    return dlnacasts.players.map((p: any) => {
-      return { name: p.name, host: p.host };
-    });
+  // CAST
+  ipcMain.handle("cast-init", () => {
+    log.info("cast-init");
+    cast.init();
   });
 
-  ipcMain.handle("dlnacasts-play", (_event, host, url, options = {}) => {
-    dlnacasts.update();
-    const player = dlnacasts.players.find((p: any) => p.host === host);
-    if (!player) return;
-    player.play(url, options);
+  ipcMain.handle("cast-devices", () => {
+    return cast.availableDevices();
   });
 
-  ipcMain.handle("chromecast-devices", () => {
-    chromecast.update();
-    return chromecast.devices.map((p: any) => {
-      return { name: p.name, host: p.host, friendlyName: p.friendlyName };
-    });
+  ipcMain.handle("cast-update", () => {
+    return cast.update();
   });
 
-  ipcMain.handle("chromecast-play", (_, host, media = {}, options = {}) => {
-    log.debug("chromecast-play", host, media, options);
-    chromecast.update();
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.play(media, options);
+  ipcMain.handle("cast-play", (_event, host, media: CastMedia) => {
+    cast.play(host, media);
   });
 
-  ipcMain.handle("chromecast-change-subtitle", (_event, host, index) => {
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.changeSubtitles(index);
+  ipcMain.handle("cast-pause", () => {
+    cast.pause();
   });
 
-  ipcMain.handle("chromecast-pause", (_event, host) => {
-    log.debug("chromecast-pause", host);
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.pause();
+  ipcMain.handle("cast-resume", () => {
+    cast.resume();
   });
 
-  ipcMain.handle("chromecast-resume", (_event, host) => {
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.resume();
+  ipcMain.handle("cast-stop", () => {
+    cast.stop();
   });
 
-  ipcMain.handle("chromecast-stop", (_event, host) => {
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.stop();
+  ipcMain.handle("cast-current-status", (_event) => {
+    return cast.currentStatus();
   });
 
-  ipcMain.handle("chromecast-current-status", async (event, host) => {
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.getStatus((err: any, status: any) => {
-      if (err) return err;
-
-      log.debug("chromecast-current-status", host, status);
-      event.sender.send("chromecast-on-status", status);
-      return status;
-    });
-  });
-
-  ipcMain.handle("chromecast-close", (_event, host) => {
-    const device = chromecast.devices.find((p: any) => p.host === host);
-    if (!device) return;
-
-    device.close();
-  });
-
+  // SHELL
   ipcMain.handle("shell-open-external", (_event, url) => {
     shell.openExternal(url);
   });
@@ -221,10 +175,12 @@ const ipcHandlers = () => {
     shell.openPath(path);
   });
 
+  // STORE
   ipcMain.handle("store-get", (_event, key) => {
     return store.get(key);
   });
 
+  // OPENSUBTITLES
   ipcMain.handle("opensubtitles-login", (_event, username, password) => {
     return opensubtitles.login({ username, password });
   });
@@ -257,6 +213,7 @@ const ipcHandlers = () => {
     }
   );
 
+  // SETTINGS
   ipcMain.handle("settings-refresh", () => {
     return {
       cacheDir: CACHE_DIR,
@@ -265,6 +222,7 @@ const ipcHandlers = () => {
     };
   });
 
+  // CLIENT
   ipcMain.handle("client-ip", () => {
     return ip.address();
   });

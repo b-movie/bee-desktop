@@ -4,36 +4,17 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
 contextBridge.exposeInMainWorld("__BEE__", {
   cast: {
-    dlna: {
-      players: () => ipcRenderer.invoke("dlnacasts-players"),
-      play: (url: string, host: string, options: Object) =>
-        ipcRenderer.invoke("dlnacasts-play", url, host, options),
-      onStatus: (callback: (event: IpcRendererEvent, status: any) => void) => {
-        ipcRenderer.on("dlnacasts-player-status", callback);
-      },
-      removeAllListeners: () => {
-        ipcRenderer.removeAllListeners("dlnacasts-player-status");
-      },
-    },
-    chrome: {
-      devices: () => ipcRenderer.invoke("chromecast-devices"),
-      play: (host: string, media: Object, options: Object) =>
-        ipcRenderer.invoke("chromecast-play", host, media, options),
-      pause: (host: string) => ipcRenderer.invoke("chromecast-pause", host),
-      resume: (host: string) => ipcRenderer.invoke("chromecast-resume", host),
-      stop: (host: string) => ipcRenderer.invoke("chromecast-stop", host),
-      close: (host: string) => ipcRenderer.invoke("chromecast-close", host),
-      currentStatus: (host: string) =>
-        ipcRenderer.invoke("chromecast-current-status", host),
-      changeSubtitle: (host: string, index: number) =>
-        ipcRenderer.invoke("chromecast-change-subtitle", host, index),
-      onStatus: (callback: (event: IpcRendererEvent, status: any) => void) => {
-        ipcRenderer.on("chromecast-on-status", callback);
-      },
-      removeAllListeners: () => {
-        ipcRenderer.removeAllListeners("chromecast-on-status");
-      },
-    },
+    init: () => ipcRenderer.invoke("cast-init"),
+    update: () => ipcRenderer.invoke("cast-update"),
+    devices: () => ipcRenderer.invoke("cast-devices"),
+    play: (host: string, media: CastMedia) =>
+      ipcRenderer.invoke("cast-play", host, media),
+    pause: () => ipcRenderer.invoke("cast-pause"),
+    resume: () => ipcRenderer.invoke("cast-resume"),
+    stop: () => ipcRenderer.invoke("cast-stop"),
+    currentStatus: () => ipcRenderer.invoke("cast-current-status"),
+    changeSubtitle: (index: number) =>
+      ipcRenderer.invoke("cast-change-subtitle", index),
   },
   client: {
     platform: "desktop",

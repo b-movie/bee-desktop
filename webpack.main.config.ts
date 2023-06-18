@@ -24,6 +24,10 @@ export const mainConfig: Configuration = {
   externals: [
     {
       "utp-native": "commonjs utp-native",
+      "node-ssdp": "commonjs node-ssdp",
+      "dlnacasts2": "commonjs dlnacasts2",
+      "chromecast-api": "commonjs chromecast-api",
+      "castv2-client": "commonjs castv2-client",
     },
   ],
   plugins: [

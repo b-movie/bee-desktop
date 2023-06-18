@@ -677,6 +677,13 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.6.0.tgz#3c7c9c46e678feefe7a2e5bb609d3dbd665ffb3f"
   integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
 
+"@suni29/castv2-client@https://github.com/Suni29/node-castv2-client":
+  version "1.3.1"
+  resolved "https://github.com/Suni29/node-castv2-client#96545b342d3d4cce775babd69bc5468b84a1efee"
+  dependencies:
+    castv2 "~0.1.4"
+    debug "^2.2.0"
+
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-4.0.6.tgz#b4a914bb62e7c272d4e5989fe4440f812ab1d807"
@@ -1980,14 +1987,6 @@ caniuse-lite@^1.0.30001464, caniuse-lite@^1.0.30001502:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001502.tgz#f7e4a76eb1d2d585340f773767be1fefc118dca8"
   integrity sha512-AZ+9tFXw1sS0o0jcpJQIXvFTOB/xGiQ4OQ2t98QX3NDn2EZTSRBC801gxrsGgViuq2ak/NLkNgSNEPtCr5lfKg==
 
-castv2-client@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/castv2-client/-/castv2-client-1.2.0.tgz#a9193b1a5448b8cb9a0415bd021c8811ed7b0544"
-  integrity sha512-2diOsC0vSSxa3QEOgoGBy9fZRHzNXatHz464Kje2OpwQ7GM5vulyrD0gLFOQ1P4rgLAFsYiSGQl4gK402nEEuA==
-  dependencies:
-    castv2 "~0.1.4"
-    debug "^2.2.0"
-
 castv2@~0.1.4:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/castv2/-/castv2-0.1.10.tgz#d3df00124f1ba8a97691c69dd44221d3b5f93c56"
@@ -2071,12 +2070,11 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz#1015eced4741e15d06664a957dbbf50d041e26ac"
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
-chromecast-api@^0.4.0:
+"chromecast-api@https://github.com/an-lee/chromecast-api":
   version "0.4.0"
-  resolved "https://registry.yarnpkg.com/chromecast-api/-/chromecast-api-0.4.0.tgz#91a0a3e1ae54b83e9e5319404915044b310c05ec"
-  integrity sha512-8bc5cxfts33cUrmsfrjhueCJT6m+heeRrzjygyrCJxyUufweiV5j6HJDtuSV5YZxj3VqIgIHS29wgPVX0jci2g==
+  resolved "https://github.com/an-lee/chromecast-api#b391a679f3a9341f125bf1ad5b9e199399056be8"
   dependencies:
-    castv2-client "1.2.0"
+    "@suni29/castv2-client" "https://github.com/Suni29/node-castv2-client"
     debug "^4.1.1"
     dns-txt "^2.0.2"
     mime "^3.0.0"
