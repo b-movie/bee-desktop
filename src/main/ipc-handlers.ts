@@ -194,17 +194,17 @@ const ipcHandlers = () => {
     return opensubtitles.download({ file_id: fileId });
   });
 
-  ipcMain.handle("subtitles-server-serve", (_event, path) => {
-    log.debug("subtitles-server-serve", path);
+  ipcMain.handle("subtitles-server-serve", (_event, path, options) => {
+    log.debug("subtitles-server-serve", path, options);
     return subtitlesServer.serve(path);
   });
 
   ipcMain.handle(
     "subtitles-server-download",
-    async (_event, url, options: { fileName?: string; format?: string }) => {
+    async (_event, url, options?: { fileName?: string }) => {
       log.debug("subtitles-server-download", url);
       try {
-        const dest = await download(url, SUBTITLE_CACHE_DIR, options.fileName);
+        const dest = await download(url, SUBTITLE_CACHE_DIR, options?.fileName);
         return subtitlesServer.serve(dest);
       } catch (err) {
         log.error("subtitles-server-download", err);

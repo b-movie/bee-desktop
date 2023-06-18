@@ -6,6 +6,7 @@ import { generatePortNumber } from "./helpers";
 import finalhandler from "finalhandler";
 import serveStatic from "serve-static";
 import log from "electron-log";
+import { srt2webvtt } from "./helpers";
 
 export default class SubtitlesServer {
   public server: any;
@@ -35,11 +36,20 @@ export default class SubtitlesServer {
 
     try {
       fs.accessSync(src);
-      const fileName = path.basename(src);
 
-      const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
-      if (src != dest) {
-        fs.copyFileSync(src, dest);
+      let fileName = path.basename(src);
+      const format = path.extname(src).replace(".", "");
+
+      if (format == "srt") {
+        const data = fs.readFileSync(src, "utf8");
+        const vtt = srt2webvtt(data);
+        fileName = fileName.replace(".srt", ".vtt");
+        fs.writeFileSync(path.join(SUBTITLE_CACHE_DIR, fileName), vtt);
+      } else {
+        const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
+        if (src != dest) {
+          fs.copyFileSync(src, dest);
+        }
       }
 
       return `http://localhost:${this.server.address().port}/${fileName}`;

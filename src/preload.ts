@@ -79,7 +79,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
   subtitlesServer: {
     download: (url: string, fileName: string) =>
       ipcRenderer.invoke("subtitles-server-download", url, fileName),
-    serve: (path: string) => ipcRenderer.invoke("subtitles-server-serve", path),
+    serve: (path: string, options?: { fileName?: string, format?: string}) => ipcRenderer.invoke("subtitles-server-serve", path, options),
   },
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
