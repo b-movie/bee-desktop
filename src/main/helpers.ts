@@ -60,6 +60,37 @@ export const download = (
   });
 };
 
+export const httpGet = (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const http = require("http");
+    const https = require("https");
+
+    let client = http;
+
+    if (url.toString().indexOf("https") === 0) {
+      client = https;
+    }
+
+    client
+      .get(url, (resp: any) => {
+        let chunks: any[] = [];
+
+        // A chunk of data has been recieved.
+        resp.on("data", (chunk: any) => {
+          chunks.push(chunk);
+        });
+
+        // The whole response has been received. Print out the result.
+        resp.on("end", () => {
+          resolve(Buffer.concat(chunks).toString("utf-8"));
+        });
+      })
+      .on("error", (err: Error) => {
+        reject(err);
+      });
+  });
+};
+
 // https://github.com/faizath/srt2vtt.js/blob/main/srt2vtt.js
 export const srt2webvtt = (data: string) => {
   // remove dos newlines

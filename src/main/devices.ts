@@ -1,4 +1,3 @@
-import ip from "ip";
 import log from "electron-log";
 
 export class GenericDevice {
@@ -23,16 +22,12 @@ export class ChromecastDevice extends GenericDevice {
   play(media: CastMedia) {
     const { url, title, cover, subtitles, options } = media;
 
-    subtitles?.forEach((sub: any, index) => {
-      subtitles[index].url = sub.url.replace("localhost", ip.address());
-    });
-
     this.device.play(
       {
-        url: url.replace("localhost", ip.address()),
+        url,
         title,
         cover,
-        subtitles,
+        subtitles: subtitles?.length > 0 ? subtitles : null,
       },
       options
     );
@@ -48,8 +43,8 @@ export class ChromecastDevice extends GenericDevice {
           this.status = status;
           log.debug(
             "chromecast player fetch status:",
-            status.playerState,
-            status.currentTime
+            status?.playerState,
+            status?.currentTime
           );
         });
       } catch (err) {
@@ -94,18 +89,12 @@ export class DlnaDevice extends GenericDevice {
       seek: media.options?.startTime,
       subtitles:
         media.subtitles && media.subtitles.length > 0
-          ? media.subtitles.map((sub: any) =>
-              sub.url.replace("localhost", ip.address())
-            )
+          ? media.subtitles.map((sub: any) => sub.url)
           : null,
       autoSubtitles: true,
     };
-    log.debug(
-      "dlna play:",
-      media.url.replace("localhost", ip.address()),
-      options
-    );
-    this.device.play(media.url.replace("localhost", ip.address()), options);
+    log.debug("dlna play:", media.url, options);
+    this.device.play(media.url, options);
 
     this.clearDeviceInterval();
     this.interval = setInterval(() => {
@@ -147,15 +136,8 @@ export class DlnaDevice extends GenericDevice {
 // Airplay
 export class AirplayDevice extends GenericDevice {
   play(media: CastMedia) {
-    log.debug(
-      "airplay play:",
-      media.url.replace("localhost", ip.address()),
-      media.options?.startTime
-    );
-    this.device.play(
-      media.url.replace("localhost", ip.address()),
-      media.options?.startTime || 0
-    );
+    log.debug("airplay play:", media.url, media.options?.startTime);
+    this.device.play(media.url, media.options?.startTime || 0);
 
     this.clearDeviceInterval();
     this.interval = setInterval(() => {

@@ -1,6 +1,9 @@
 import ChromecastAPI from "chromecast-api";
 import log from "electron-log";
 import { AirplayDevice, ChromecastDevice, DlnaDevice } from "./devices";
+import ip from "ip";
+import SubtitlesServer from "./subtitles-server";
+const subtitlesServer = new SubtitlesServer();
 
 export default class Cast {
   public chromecast: any;
@@ -59,8 +62,13 @@ export default class Cast {
   async play(host: string, media: CastMedia) {
     log.debug("cast-play:", host, media);
 
-    await this.device?.stop();
+    media.url = media.url.replace("localhost", ip.address());
 
+    if (media.subtitles && media.subtitles?.length > 0) {
+      media.subtitles = this.serveSubtitles(media.subtitles);
+    }
+
+    await this.device?.stop();
     const device = this.devices.find((device) => device.host === host);
     if (!device) throw new Error("Device not found");
 
@@ -81,6 +89,17 @@ export default class Cast {
     } catch (err) {
       log.error("cast-play error:", err);
     }
+  }
+
+  serveSubtitles(subtitles: any[]) {
+    subtitles.forEach(async (sub, index) => {
+      const url = await subtitlesServer.serve(sub.url);
+      subtitles[index].url = url?.replace("localhost", ip.address());
+    });
+    subtitles = subtitles.filter((sub) => sub.url);
+
+    if (subtitles.length === 0) return null;
+    return subtitles;
   }
 
   pause() {

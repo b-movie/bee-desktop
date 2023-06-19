@@ -6,7 +6,8 @@ import { generatePortNumber } from "./helpers";
 import finalhandler from "finalhandler";
 import serveStatic from "serve-static";
 import log from "electron-log";
-import { srt2webvtt } from "./helpers";
+import { srt2webvtt, httpGet } from "./helpers";
+import { createHash } from "crypto";
 
 export default class SubtitlesServer {
   public server: any;
@@ -29,33 +30,37 @@ export default class SubtitlesServer {
     }
   }
 
-  serve(src: string) {
+  async serve(src: string): Promise<string | null> {
+    if (!src) return null;
+
+    let data = "";
+    try {
+      if (src.match(/http(s)?:\/\//)) {
+        data = await httpGet(src);
+      } else {
+        fs.accessSync(src);
+        data = fs.readFileSync(src, "utf8");
+      }
+    } catch (err) {
+      log.error("subtitles-server read file:", err);
+      return null;
+    }
+
+    const format =
+      data.split("\n")[0].toLowerCase() === "webvtt" ? "vtt" : "srt";
+    if (format == "srt") {
+      data = srt2webvtt(data);
+    }
+    let fileName = createHash("md5").update(data).digest("hex") + ".vtt";
+    fs.writeFileSync(path.join(SUBTITLE_CACHE_DIR, fileName), data);
+
     if (!this.server) {
       this.init();
     }
 
-    try {
-      fs.accessSync(src);
+    const url = `http://localhost:${this.server.address().port}/${fileName}`;
+    log.debug("serve-subtitles:", src, url);
 
-      let fileName = path.basename(src);
-      const format = path.extname(src).replace(".", "");
-
-      if (format == "srt") {
-        const data = fs.readFileSync(src, "utf8");
-        const vtt = srt2webvtt(data);
-        fileName = fileName.replace(".srt", ".vtt");
-        fs.writeFileSync(path.join(SUBTITLE_CACHE_DIR, fileName), vtt);
-      } else {
-        const dest = path.join(SUBTITLE_CACHE_DIR, fileName);
-        if (src != dest) {
-          fs.copyFileSync(src, dest);
-        }
-      }
-
-      return `http://localhost:${this.server.address().port}/${fileName}`;
-    } catch (err) {
-      log.error(err);
-      return null;
-    }
+    return url;
   }
 }

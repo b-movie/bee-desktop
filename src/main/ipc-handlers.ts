@@ -15,7 +15,6 @@ import {
   TRACKERS,
 } from "./constants";
 import { download } from "./helpers";
-import SubtitlesServer from "./subtitles-server";
 import ip from "ip";
 
 const cast = new Cast();
@@ -25,7 +24,6 @@ const store = new Store();
 const opensubtitles = new OpenSubtitles({
   apikey: OPENSUBTITLES_API_KEY,
 });
-const subtitlesServer = new SubtitlesServer();
 
 const ipcHandlers = () => {
   // TORRENT
@@ -193,25 +191,6 @@ const ipcHandlers = () => {
     log.debug("opensubtitles-download", fileId);
     return opensubtitles.download({ file_id: fileId });
   });
-
-  ipcMain.handle("subtitles-server-serve", (_event, path) => {
-    log.debug("subtitles-server-serve", path);
-    return subtitlesServer.serve(path);
-  });
-
-  ipcMain.handle(
-    "subtitles-server-download",
-    async (_event, url, options?: { fileName?: string }) => {
-      log.debug("subtitles-server-download", url);
-      try {
-        const dest = await download(url, SUBTITLE_CACHE_DIR, options?.fileName);
-        return subtitlesServer.serve(dest);
-      } catch (err) {
-        log.error("subtitles-server-download", err);
-        return null;
-      }
-    }
-  );
 
   // SETTINGS
   ipcMain.handle("settings-refresh", () => {

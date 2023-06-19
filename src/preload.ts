@@ -13,8 +13,6 @@ contextBridge.exposeInMainWorld("__BEE__", {
     resume: () => ipcRenderer.invoke("cast-resume"),
     stop: () => ipcRenderer.invoke("cast-stop"),
     currentStatus: () => ipcRenderer.invoke("cast-current-status"),
-    changeSubtitle: (index: number) =>
-      ipcRenderer.invoke("cast-change-subtitle", index),
   },
   client: {
     platform: "desktop",
@@ -75,11 +73,6 @@ contextBridge.exposeInMainWorld("__BEE__", {
   },
   store: {
     get: (key: string) => ipcRenderer.invoke("store-get", key),
-  },
-  subtitlesServer: {
-    download: (url: string, fileName: string) =>
-      ipcRenderer.invoke("subtitles-server-download", url, fileName),
-    serve: (path: string, options?: { fileName?: string, format?: string}) => ipcRenderer.invoke("subtitles-server-serve", path, options),
   },
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
