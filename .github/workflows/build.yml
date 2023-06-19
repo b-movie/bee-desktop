@@ -10,15 +10,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 20
       - if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install libavahi-compat-libdnssd-dev
+        run: |
+          sudo apt-get install libavahi-compat-libdnssd-dev
+          sudo apt-get install wine64
       - name: install dependencies
         run: yarn install
       - name: build
         run: yarn package
+      - if: matrix.os == 'ubuntu-latest'
+        run: yarn package --platform=win32
