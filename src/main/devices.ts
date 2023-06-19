@@ -136,7 +136,7 @@ export class DlnaDevice extends GenericDevice {
   stop() {
     this.clearDeviceInterval();
     try {
-      this.device.close();
+      this.device.stop();
       this.status = {};
     } catch (err) {
       log.error("dlna stop error:", err);
