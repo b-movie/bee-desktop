@@ -161,11 +161,11 @@ export class AirplayDevice extends GenericDevice {
     this.interval = setInterval(() => {
       this.device.playbackInfo((err: any, _: any, status: any) => {
         if (err) return;
-        log.debug("airplay player fetch status:", status);
         this.status = {
-          playerState: status.state?.toUpperCase(),
+          playerState: status.rate > 0 ? "PLAYING" : "PAUSED",
           currentTime: status.position,
         };
+        log.debug("airplay player fetch status:", status.position);
       });
     }, 1000);
   }
@@ -186,14 +186,13 @@ export class AirplayDevice extends GenericDevice {
     }
   }
 
-  stop() {
-    this.clearDeviceInterval();
+  async stop() {
     try {
-      this.device.stop();
-      this.device.destroy();
+      await this.device.stop();
       this.status = {};
     } catch (err) {
       log.error("airplay stop error:", err);
     }
+    this.clearDeviceInterval();
   }
 }

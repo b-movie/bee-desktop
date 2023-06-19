@@ -76,7 +76,11 @@ export default class Cast {
     }
     if (!this.device) throw new Error("Device not found");
 
-    this.device.play(media);
+    try {
+      this.device.play(media);
+    } catch (err) {
+      log.error("cast-play error:", err);
+    }
   }
 
   pause() {
@@ -92,6 +96,7 @@ export default class Cast {
   async stop() {
     log.debug("cast-stop", this.device?.device?.host);
     await this.device?.stop();
+    this.device = null;
   }
 
   currentStatus() {
