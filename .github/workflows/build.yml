@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20
+      - if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install libavahi-compat-libdnssd-dev
       - name: install dependencies
         run: yarn install
       - name: build
