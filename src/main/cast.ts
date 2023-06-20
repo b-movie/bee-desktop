@@ -1,4 +1,3 @@
-import ChromecastAPI from "chromecast-api";
 import log from "electron-log";
 import { AirplayDevice, ChromecastDevice, DlnaDevice } from "./devices";
 import ip from "ip";
@@ -13,6 +12,7 @@ export default class Cast {
   public device: any = null;
 
   init() {
+    const ChromecastAPI = require("chromecast-api");
     this.chromecast = new ChromecastAPI();
     this.dlnacast = require("dlnacasts2")();
     this.airplay = require("airplayer")();
