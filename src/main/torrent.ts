@@ -3,7 +3,6 @@ import { TRACKERS, CACHE_DIR } from "./constants";
 import { generatePortNumber } from "./helpers";
 import WebTorrent from "webtorrent";
 import log from "electron-log";
-import ip from "ip";
 
 export default class Torrent {
   public client: any;
@@ -38,21 +37,21 @@ export default class Torrent {
         `Torrent progress: ${(existedTorrent.progress * 100).toFixed(2)}%`
       );
       if (existedTorrent.paused) existedTorrent.resume();
-      existedTorrent.files[meta.fileIdx]?.select(); // Select only fileIdx
+
+      this.selectFile(meta.infoHash, meta.fileIdx);
     } else {
+      log.debug(`Torrent adding: ${meta.infoHash}`);
       this.client.add(
         meta.infoHash,
         {
           path: CACHE_DIR,
           announce: TRACKERS,
+          maxConns: 10,
+          dht: { concurrency: 16 },
         },
-        (torrent: any) => {
-          log.debug("select stream file only");
-          // deselect files, webtorrent api
-          // as of november 2016, need to remove all torrent,
-          //  then add wanted file, it's a bug: https://github.com/feross/webtorrent/issues/164
-          torrent.deselect(0, torrent.pieces.length - 1, false); // Remove default selection (whole torrent)
-          torrent.files[meta.fileIdx]?.select(); // Select only fileIdx
+        () => {
+          log.debug(`Torrent added: ${meta.infoHash}`);
+          this.selectFile(meta.infoHash, meta.fileIdx);
         }
       );
     }
@@ -81,6 +80,8 @@ export default class Torrent {
     if (!torrent) return;
 
     torrent.pause();
+    torrent.files.forEach((file: any) => file.deselect());
+    torrent.deselect(0, torrent.pieces.length - 1, false);
   }
 
   resume(infoHash: string) {
@@ -124,7 +125,17 @@ export default class Torrent {
     );
     if (!torrent) return;
 
-    torrent.files[fileIdx]?.select();
+    log.debug("select stream file only");
+    // deselect files, webtorrent api
+    // as of november 2016, need to remove all torrent,
+    //  then add wanted file, it's a bug: https://github.com/feross/webtorrent/issues/164
+    // Deselect all files on initial download
+    torrent.files.forEach((file: any) => file.deselect());
+    torrent.deselect(0, torrent.pieces.length - 1, false);
+
+    // Select file with provided index
+    const file = torrent.files[fileIdx];
+    if (file) torrent.select(file._startPiece, file._endPiece, false);
   }
 
   destroy(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
@@ -140,7 +151,7 @@ export default class Torrent {
     return {
       name: torrent?.name,
       infoHash: torrent?.infoHash,
-      magnetURI: torrent?.progress,
+      magnetURI: torrent?.magnetURI,
       // torrentFile: torrent?.torrentFile,
       announce: torrent?.announce,
       files: torrent?.files?.map((f: any) => ({
@@ -151,9 +162,7 @@ export default class Torrent {
         progress: f.progress,
         priority: f.priority,
         streamUrl:
-          `http://localhost:${
-            this.server.server.address().port
-          }` + f.streamURL,
+          `http://localhost:${this.server.server.address().port}` + f.streamURL,
       })),
       timeRemaining: torrent?.timeRemaining,
       received: torrent?.received,
