@@ -3,6 +3,7 @@ import { AirplayDevice, ChromecastDevice, DlnaDevice } from "./devices";
 import ip from "ip";
 import SubtitlesServer from "./subtitles-server";
 const subtitlesServer = new SubtitlesServer();
+const ChromecastAPI = require("chromecast-api");
 
 export default class Cast {
   public chromecast: any;
@@ -12,17 +13,19 @@ export default class Cast {
   public device: any = null;
 
   init() {
-    const ChromecastAPI = require("chromecast-api");
+    log.info("cast-init");
     this.chromecast = new ChromecastAPI();
     this.dlnacast = require("dlnacasts2")();
     this.airplay = require("airplayer")();
   }
 
   update() {
+    log.info("cast-update");
     const _devices: any[] = [];
 
     this.chromecast.update();
     this.chromecast.devices.forEach((device: any) => {
+      log.info("found chromecast:", device.name, device.host)
       _devices.push({
         protocol: "chromecast",
         name: device.name,
@@ -33,6 +36,7 @@ export default class Cast {
 
     this.dlnacast.update();
     this.dlnacast.players.forEach((device: any) => {
+      log.info("found dlna:", device.name, device.host)
       _devices.push({
         protocol: "dlna",
         name: device.name,
@@ -43,6 +47,7 @@ export default class Cast {
 
     this.airplay.update();
     this.airplay.players.forEach((device: any) => {
+      log.info("found airplay:", device.name, device.host)
       _devices.push({
         protocol: "airplay",
         name: device.name,

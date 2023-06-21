@@ -132,7 +132,6 @@ const ipcHandlers = () => {
 
   // CAST
   ipcMain.handle("cast-init", () => {
-    log.info("cast-init");
     cast.init();
   });
 
