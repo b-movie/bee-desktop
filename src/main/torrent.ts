@@ -9,20 +9,30 @@ export default class Torrent {
   public server: any;
   private timer: NodeJS.Timer | null = null;
 
-  async init() {
+  async init(event: IpcMainInvokeEvent) {
     if (!this.client) {
       this.client = new WebTorrent();
       this.server = this.client.createServer({
         pathname: "/bee",
       });
+
+      this.client.on("error", (error: ErrorEvent) => {
+        log.error(error);
+        event.sender.send("torrent-on-error", error);
+      });
+
       this.server.listen(generatePortNumber());
+      this.server.on("clientError", (error: NodeJS.ErrnoException) => {
+        log.error(error);
+        if (error.code === "ERR_HTTP_REQUEST_TIMEOUT") return;
+      });
     }
 
     return this.client ? true : false;
   }
 
   async seed(event: IpcMainInvokeEvent, meta: Meta, ..._args: any[]) {
-    await this.init();
+    await this.init(event);
 
     let existedTorrent: any = null;
     this.client.torrents.forEach((t: any) => {
@@ -55,11 +65,6 @@ export default class Torrent {
         }
       );
     }
-
-    this.client.on("error", (error: ErrorEvent) => {
-      log.error(error);
-      event.sender.send("torrent-on-error", error);
-    });
 
     // clear previous timer
     if (this.timer) clearInterval(this.timer);

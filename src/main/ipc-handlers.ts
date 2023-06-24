@@ -27,7 +27,7 @@ const opensubtitles = new OpenSubtitles({
 
 const ipcHandlers = () => {
   // TORRENT
-  ipcMain.handle("torrent-init", () => torrent.init());
+  ipcMain.handle("torrent-init", (event) => torrent.init(event));
 
   ipcMain.handle("torrent-seed", (event, meta, ...args) =>
     torrent.seed(event, meta, ...args)
