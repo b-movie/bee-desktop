@@ -6,6 +6,7 @@ import Torrent from "./main/torrent";
 import MPV from "./main/mpv";
 import ipcHandlers from "./main/ipc-handlers";
 import log from "electron-log";
+import process from "process";
 
 const mpv = new MPV();
 const torrent = new Torrent();
@@ -66,6 +67,10 @@ const createWindow = () => {
       shell.openExternal(url);
       return { action: "deny" };
     }
+  });
+
+  process.on("uncaughtException", (error) => {
+    log.error(error);
   });
 };
 

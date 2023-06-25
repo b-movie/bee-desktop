@@ -1,5 +1,5 @@
 import log from "electron-log";
-import { AirplayDevice, ChromecastDevice, DlnaDevice } from "./devices";
+import { ChromecastDevice, DlnaDevice } from "./devices";
 import ip from "ip";
 import SubtitlesServer from "./subtitles-server";
 const subtitlesServer = new SubtitlesServer();
@@ -8,7 +8,6 @@ const ChromecastAPI = require("chromecast-api");
 export default class Cast {
   public chromecast: any;
   public dlnacast: any;
-  public airplay: any;
   public devices: any[] = [];
   public device: any = null;
 
@@ -16,7 +15,6 @@ export default class Cast {
     log.info("cast-init");
     this.chromecast = new ChromecastAPI();
     this.dlnacast = require("dlnacasts2")();
-    this.airplay = require("airplayer")();
   }
 
   update() {
@@ -25,7 +23,7 @@ export default class Cast {
 
     this.chromecast.update();
     this.chromecast.devices.forEach((device: any) => {
-      log.info("found chromecast:", device.name, device.host)
+      log.info("found chromecast:", device.name, device.host);
       _devices.push({
         protocol: "chromecast",
         name: device.name,
@@ -36,22 +34,11 @@ export default class Cast {
 
     this.dlnacast.update();
     this.dlnacast.players.forEach((device: any) => {
-      log.info("found dlna:", device.name, device.host)
+      log.info("found dlna:", device.name, device.host);
       _devices.push({
         protocol: "dlna",
         name: device.name,
         friendlyName: device.friendlyName || device.name,
-        host: device.host,
-      });
-    });
-
-    this.airplay.update();
-    this.airplay.players.forEach((device: any) => {
-      log.info("found airplay:", device.name, device.host)
-      _devices.push({
-        protocol: "airplay",
-        name: device.name,
-        friendlyName: device.name || device.serverInfo.model,
         host: device.host,
       });
     });
@@ -83,9 +70,6 @@ export default class Cast {
     } else if (device.protocol === "dlna") {
       const player = this.dlnacast.players.find((d: any) => d.host === host);
       this.device = new DlnaDevice(player);
-    } else if (device.protocol === "airplay") {
-      const player = this.airplay.players.find((d: any) => d.host === host);
-      this.device = new AirplayDevice(player);
     }
     if (!this.device) throw new Error("Device not found");
 
@@ -97,10 +81,12 @@ export default class Cast {
   }
 
   serveSubtitles(subtitles: any[]) {
-    subtitles.forEach(async (sub, index) => {
-      const url = await subtitlesServer.serve(sub.url);
-      subtitles[index].url = url?.replace("localhost", ip.address());
-    });
+    subtitles
+      .filter((sub) => sub.url)
+      .forEach(async (sub, index) => {
+        const url = await subtitlesServer.serve(sub.url);
+        subtitles[index].url = url?.replace("localhost", ip.address());
+      });
     subtitles = subtitles.filter((sub) => sub.url);
 
     if (subtitles.length === 0) return null;
