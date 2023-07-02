@@ -21,8 +21,8 @@ export default class Torrent {
         event.sender.send("torrent-on-error", error);
       });
 
-      this.server.listen(generatePortNumber());
-      this.server.on("clientError", (error: NodeJS.ErrnoException) => {
+      await this.server.listen(generatePortNumber());
+      this.server.server.on("clientError", (error: NodeJS.ErrnoException) => {
         log.error(error);
         if (error.code === "ERR_HTTP_REQUEST_TIMEOUT") return;
       });
@@ -59,8 +59,8 @@ export default class Torrent {
           maxConns: 10,
           dht: { concurrency: 16 },
         },
-        () => {
-          log.debug(`Torrent added: ${meta.infoHash}`);
+        (torrent: any) => {
+          log.debug(`Torrent added: ${meta.infoHash}: ${torrent.name}`);
           this.selectFile(meta.infoHash, meta.fileIdx);
         }
       );
@@ -80,7 +80,7 @@ export default class Torrent {
 
   pause(infoHash: string) {
     const torrent = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
     if (!torrent) return;
 
@@ -91,7 +91,7 @@ export default class Torrent {
 
   resume(infoHash: string) {
     const torrent = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
     if (!torrent) return;
 
@@ -108,7 +108,7 @@ export default class Torrent {
 
   deselectAll(infoHash: string) {
     const torrent = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
     if (!torrent) return;
 
@@ -117,7 +117,7 @@ export default class Torrent {
 
   deselectFile(infoHash: string, fileIdx: number) {
     const torrent = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
     if (!torrent) return;
 
@@ -125,8 +125,10 @@ export default class Torrent {
   }
 
   selectFile(infoHash: string, fileIdx: number) {
+    if (!this.client) return;
+
     const torrent = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
     if (!torrent) return;
 
@@ -135,19 +137,26 @@ export default class Torrent {
     // as of november 2016, need to remove all torrent,
     //  then add wanted file, it's a bug: https://github.com/feross/webtorrent/issues/164
     // Deselect all files on initial download
-    torrent.files.forEach((file: any) => file.deselect());
     torrent.deselect(0, torrent.pieces.length - 1, false);
 
     // Select file with provided index
-    const file = torrent.files[fileIdx];
-    if (file) torrent.select(file._startPiece, file._endPiece, false);
+    for (let i = 0; i < torrent.files.length; i++) {
+      const file = torrent.files[i];
+      if (i == fileIdx) {
+        file.select();
+        log.debug("selecting file " + i + " of torrent: " + file.name);
+      } else {
+        log.debug("deselecting file " + i + " of torrent: " + file.name);
+        file.deselect();
+      }
+    }
   }
 
   destroy(_event: IpcMainInvokeEvent, infoHash: string, ..._args: any[]) {
     log.debug("destroy-torrent", infoHash);
 
     const torrent = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
     torrent?.destroy();
   }
@@ -191,14 +200,14 @@ export default class Torrent {
 
   torrentFile(infoHash: string) {
     const torrent: any = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
     return torrent?.torrentFile;
   }
 
   state(infoHash: string) {
     const torrent: any = this.client.torrents.find(
-      (t: any) => t.infoHash === infoHash
+      (t: any) => t.infoHash === infoHash.toLowerCase()
     );
 
     return this.torrentState(torrent);
