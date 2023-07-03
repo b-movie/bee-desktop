@@ -1,12 +1,20 @@
 // polyfill for crypto
 globalThis.crypto = require("crypto");
 import "dotenv/config";
-import { app, BrowserWindow, Menu, globalShortcut, shell } from "electron";
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  globalShortcut,
+  shell,
+  dialog,
+} from "electron";
 import Torrent from "./main/torrent";
 import MPV from "./main/mpv";
 import ipcHandlers from "./main/ipc-handlers";
 import log from "electron-log";
 import process from "process";
+import path from "path";
 
 const mpv = new MPV();
 const torrent = new Torrent();
@@ -24,9 +32,48 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient("bee", process.execPath, [
+      path.resolve(process.argv[1]),
+    ]);
+  }
+} else {
+  app.setAsDefaultProtocolClient("bee");
+}
+
+let mainWindow: BrowserWindow | null = null;
+
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+
+    const url = commandLine.pop();
+    mainWindow.loadURL(url.replace("bee://", WEBAPP_URL + "/"));
+  });
+
+  // Create mainWindow, load the rest of the app, etc...
+  app.whenReady().then(() => {
+    createWindow();
+    ipcHandlers();
+  });
+
+  app.on("open-url", (_event, url) => {
+    mainWindow.loadURL(url.replace("bee://", WEBAPP_URL + "/"));
+  });
+}
+
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     height: 1080,
     width: 1920,
     minWidth: 1280,
@@ -78,10 +125,10 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", () => {
-  createWindow();
-  ipcHandlers();
-});
+// app.on("ready", () => {
+//   createWindow();
+//   ipcHandlers();
+// });
 
 // Quit when all windows are closed, even on macOS.
 app.on("window-all-closed", async () => {

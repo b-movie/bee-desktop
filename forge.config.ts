@@ -12,6 +12,12 @@ const config: ForgeConfig = {
   packagerConfig: {
     icon: "./assets/icon",
     executableName: "bee-desktop",
+    protocols: [
+      {
+        name: "BEE",
+        schemes: ["bee"],
+      },
+    ],
   },
   rebuildConfig: {},
   makers: [
@@ -26,6 +32,7 @@ const config: ForgeConfig = {
         name: "bee-desktop",
         productName: "BEE",
         icon: "./assets/icon.png",
+        mimeType: ["x-scheme-handler/bee"],
       },
     }),
   ],
