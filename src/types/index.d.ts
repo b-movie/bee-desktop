@@ -9,7 +9,8 @@ declare module "opensubtitles.com";
 declare module "ip";
 
 type Meta = {
-  infoHash: string;
+  infoHash?: string;
+  magnetURI?: string;
   fileIdx: number;
   title: string;
   type: "movie" | "series";

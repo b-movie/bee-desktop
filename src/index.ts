@@ -119,6 +119,7 @@ const createWindow = () => {
 
   process.on("uncaughtException", (error) => {
     log.error(error);
+    dialog.showErrorBox("Error", error.message);
   });
 };
 

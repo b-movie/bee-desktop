@@ -34,25 +34,36 @@ export default class Torrent {
   async seed(event: IpcMainInvokeEvent, meta: Meta, ..._args: any[]) {
     await this.init(event);
 
+    let { infoHash, magnetURI } = meta;
+    if (!infoHash) {
+      try {
+        infoHash = magnetURI.split("btih:")[1].split("&")[0].toLowerCase();
+      } catch (error) {
+        log.error(error);
+      }
+    } else {
+      infoHash = infoHash.toLowerCase();
+    }
+
     let existedTorrent: any = null;
     this.client.torrents.forEach((t: any) => {
-      if (t.infoHash === meta.infoHash) {
+      if (t.infoHash === infoHash) {
         existedTorrent = t;
       }
     });
 
     if (existedTorrent) {
-      log.warn(`Torrent already added: ${meta.infoHash}`);
+      log.warn(`Torrent already added: ${infoHash}`);
       log.warn(
         `Torrent progress: ${(existedTorrent.progress * 100).toFixed(2)}%`
       );
       if (existedTorrent.paused) existedTorrent.resume();
 
-      this.selectFile(meta.infoHash, meta.fileIdx);
+      this.selectFile(infoHash, meta.fileIdx);
     } else {
-      log.debug(`Torrent adding: ${meta.infoHash}`);
+      log.debug(`Torrent adding: ${infoHash}`);
       this.client.add(
-        meta.infoHash,
+        magnetURI || infoHash,
         {
           path: CACHE_DIR,
           announce: TRACKERS,
@@ -60,8 +71,8 @@ export default class Torrent {
           dht: { concurrency: 16 },
         },
         (torrent: any) => {
-          log.debug(`Torrent added: ${meta.infoHash}: ${torrent.name}`);
-          this.selectFile(meta.infoHash, meta.fileIdx);
+          log.debug(`Torrent added: ${torrent.infoHash}: ${torrent.name}`);
+          this.selectFile(torrent.infoHash, meta.fileIdx);
         }
       );
     }
