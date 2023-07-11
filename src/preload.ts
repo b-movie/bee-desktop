@@ -101,4 +101,7 @@ contextBridge.exposeInMainWorld("__BEE__", {
       ipcRenderer.removeAllListeners("torrent-on-state");
     },
   },
+  webpage: {
+    parse: (url: string) => ipcRenderer.invoke("webpage-parse", url),
+  },
 });

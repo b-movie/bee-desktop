@@ -34,6 +34,7 @@
     "@electron-forge/maker-zip": "^6.2.1",
     "@electron-forge/plugin-webpack": "^6.2.1",
     "@electron-forge/publisher-github": "^6.2.1",
+    "@types/jsdom": "^21.1.1",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
@@ -58,6 +59,7 @@
     "webpack-shell-plugin-next": "^2.3.1"
   },
   "dependencies": {
+    "@mozilla/readability": "^0.4.4",
     "chromecast-api": "^0.4.0",
     "daisyui": "^3.1.7",
     "dlnacasts2": "https://github.com/an-lee/dlnacasts2",
@@ -66,7 +68,9 @@
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "finalhandler": "^1.2.0",
+    "got": "^13.0.0",
     "ip": "^1.1.8",
+    "jsdom": "^22.1.0",
     "node-mpv": "https://github.com/A-Julien/Node-MPV.git",
     "opensubtitles.com": "https://github.com/an-lee/opensubtitles.com",
     "react": "^18.2.0",

@@ -16,6 +16,9 @@ import {
 } from "./constants";
 import { download } from "./helpers";
 import ip from "ip";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
+import got from "got";
 
 const cast = new Cast();
 const mpv = new MPV();
@@ -189,6 +192,24 @@ const ipcHandlers = () => {
   ipcMain.handle("opensubtitles-download", (_event, fileId) => {
     log.debug("opensubtitles-download", fileId);
     return opensubtitles.download({ file_id: fileId });
+  });
+
+  // WEBPAGE
+  ipcMain.handle("webpage-parse", async (_event, url) => {
+    try {
+      const html = await got(url, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0",
+        },
+      }).text();
+      const doc = new JSDOM(html, { url });
+      const reader = new Readability(doc.window.document);
+      return reader.parse();
+    } catch (err) {
+      log.error(err);
+      return {};
+    }
   });
 
   // SETTINGS
