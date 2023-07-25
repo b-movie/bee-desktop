@@ -1,40 +1,33 @@
-import { BrowserWindow, IpcMainInvokeEvent } from "electron";
+import { IpcMainInvokeEvent } from "electron";
 import NodeMPV from "node-mpv";
 import log from "electron-log";
 import os from "os";
-import { existsSync } from "fs";
 import path from "path";
 
 export default class MPV {
   public mpv: any;
 
-  init(event: IpcMainInvokeEvent, options: object = {}, args: string[] = []) {
-    const platform = os.platform();
-    const binary =
-      platform === "win32"
-        ? path.join(__dirname, "libs/mpv/mpv.exe")
-        : path.join(__dirname, "libs/mpv/mpv");
-    if (existsSync(binary)) {
-      options = { ...options, binary };
+  init(event: IpcMainInvokeEvent, options: any = {}, args: string[] = []) {
+    if (this.mpv) {
+      this.mpv.quit();
     }
-    const configDir = path.join(__dirname, "libs/mpv/config");
 
-    const win = BrowserWindow.fromWebContents(event.sender);
-    // let winID: number;
-    // let hbuf = win.getNativeWindowHandle();
-    //
-    // if (os.endianness() == "LE") {
-    //   winID = hbuf.readInt32LE();
-    // } else {
-    //   winID = hbuf.readInt32BE();
-    // }
+    const platform = os.platform();
+    const defaultArgs: string[] = ["--save-position-on-quit"];
+    let { binary } = options;
 
-    const defaultArgs = [
-      // "--fullscreen",
-      `--config-dir=${configDir}`,
-      "--save-position-on-quit",
-      // "--wid=" + winID,
-    ];
+    // If binary is not specified, use the bundled mpv
+    if (!binary) {
+      binary =
+        platform === "win32"
+          ? path.join(__dirname, "libs/mpv/mpv.exe")
+          : path.join(__dirname, "libs/mpv/mpv");
+      defaultArgs.push(
+        `--config-dir=${path.join(__dirname, "libs/mpv/config")}`
+      );
+    }
+
+    options = { ...options, binary: binary };
     args = [...defaultArgs, ...args];
 
     this.mpv = new NodeMPV(options, args);
@@ -77,7 +70,6 @@ export default class MPV {
     this.mpv.on("quit", () => {
       log.warn("MPV", "quit by user");
       this.mpv = null;
-      win.setFullScreen(false);
       event.sender.send("mpv-on-status", {
         property: "event:stopped",
         value: true,
@@ -87,13 +79,24 @@ export default class MPV {
 
   async load(event: IpcMainInvokeEvent, url: string, options: any = {}) {
     if (!this.mpv) {
-      this.init(event);
+      this.init(event, options);
     }
 
+    const platform = os.platform();
+    const subFilePaths = ["subs", "Subs", "subtitles"];
+    const args: string[] = [
+      "--sub-auto=all",
+      `--sub-file-paths=${
+        platform === "win32" ? subFilePaths.join(";") : subFilePaths.join(":")
+      }`,
+    ];
+    if (options.start) {
+      args.push(`--start=+${options.start}`);
+    }
     try {
       await this.mpv.start();
-      log.info("MPV", "load", url, options);
-      await this.mpv.load(url, "replace");
+      log.info("MPV", "load", url, args);
+      await this.mpv.load(url, "replace", args);
       if (options.start) {
         this.mpv.goToPosition(options.start);
       }
