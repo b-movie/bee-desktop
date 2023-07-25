@@ -75,6 +75,7 @@
     "opensubtitles.com": "https://github.com/an-lee/opensubtitles.com",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "readdirp": "^3.6.0",
     "serve-static": "^1.15.0",
     "webtorrent": "^2.1.15"
   }
