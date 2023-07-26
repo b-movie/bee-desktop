@@ -19,39 +19,24 @@ contextBridge.exposeInMainWorld("__BEE__", {
     version: require("../package.json").version,
     ip: () => ipcRenderer.invoke("client-ip"),
   },
+  externalPlayers: {
+    discover: () => ipcRenderer.invoke("external-players-discover"),
+    list: () => ipcRenderer.invoke("external-players-list"),
+    play: (playerId: string, params: object) =>
+      ipcRenderer.invoke("external-players-play", playerId, params),
+    stop: (playerId: string) =>
+      ipcRenderer.invoke("external-players-stop", playerId),
+    pause: (playerId: string) =>
+      ipcRenderer.invoke("external-players-pause", playerId),
+    resume: (playerId: string) =>
+      ipcRenderer.invoke("external-players-resume", playerId),
+    status: (playerId: string) =>
+      ipcRenderer.invoke("external-players-status", playerId),
+  },
   fs: {
     readFile: (path: string) => ipcRenderer.invoke("fs-read-file", path),
     download: (url: string, path: string) =>
       ipcRenderer.invoke("fs-download", url, path),
-  },
-  mpv: {
-    play: (url: string, options: string[] = []) =>
-      ipcRenderer.invoke("mpv-play", url, options),
-    pause: () => ipcRenderer.invoke("mpv-pause"),
-    resume: () => ipcRenderer.invoke("mpv-resume"),
-    quit: () => ipcRenderer.invoke("mpv-quit"),
-    isRunning: () => ipcRenderer.invoke("mpv-is-running"),
-    goToPosition: (position: number) => {
-      ipcRenderer.invoke("mpv-go-to-position", position);
-    },
-    addSubtitles: (file: string, flag: string, title: string, lang: string) => {
-      ipcRenderer.invoke("mpv-add-subtitles", file, flag, title, lang);
-    },
-    observeProperty: (property: string) => {
-      ipcRenderer.invoke("mpv-observe-property", property);
-    },
-    unobserveProperty: (property: string) => {
-      ipcRenderer.invoke("mpv-unobserve-property", property);
-    },
-    onStatus: (callback: (event: IpcRendererEvent, status: any) => void) =>
-      ipcRenderer.on("mpv-on-status", callback),
-    getProperty: (property: string) =>
-      ipcRenderer.invoke("mpv-get-property", property),
-    getTimePosition: () => ipcRenderer.invoke("mpv-get-time-position"),
-    getPercentPosition: () => ipcRenderer.invoke("mpv-get-percent-position"),
-    removeAllListeners: () => {
-      ipcRenderer.removeAllListeners("mpv-on-status");
-    },
   },
   opensubtitles: {
     login: (username: string, password: string) =>

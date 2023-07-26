@@ -74,3 +74,37 @@ type CastMedia = {
     startTime?: number;
   };
 };
+
+type PlayerConfig = {
+  id: string; // host for cast player, id for external player
+  name: string;
+  protocol?: string; // for cast player
+  path?: string;
+  icon?: string;
+  cmd?: string;
+  switches?: string;
+  subswitch?: string;
+  urlswitch?: string;
+  fs?: string;
+  stop?: string;
+  pause?: string;
+  filenameswitch?: string;
+};
+
+type MediaParams = {
+  url: string;
+  title?: string;
+  cover?: {
+    title?: string;
+    url: string;
+  };
+  subtitles?: {
+    url: string;
+    name?: string;
+    lang?: string;
+  }[];
+  options?: {
+    startTime?: number;
+  };
+};
+

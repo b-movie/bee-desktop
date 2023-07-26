@@ -3,10 +3,14 @@ import NodeMPV from "node-mpv";
 import log from "electron-log";
 import os from "os";
 import path from "path";
-import { externalPlayers } from "./ipc-handlers";
+import GenericPlayer from "./generic-player";
 
-export default class MPV {
+export default class MPV extends GenericPlayer {
   public mpv: any;
+
+  constructor(config: PlayerConfig) {
+    super(config);
+  }
 
   init(event: IpcMainInvokeEvent, options: any = {}, args: string[] = []) {
     if (this.mpv) return this.mpv;
@@ -23,14 +27,6 @@ export default class MPV {
 
     // If the user has specified a path to mpv, use that
     let { binary } = options;
-
-    // If binary is not specified, try to find mpv in the external players list
-    if (!binary) {
-      const mpvPlayer = externalPlayers.list.find((p) => p.id === "mpv");
-      if (mpvPlayer) {
-        binary = mpvPlayer.path;
-      }
-    }
 
     // If binary is not specified, use the bundled mpv
     if (!binary) {

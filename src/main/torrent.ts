@@ -230,3 +230,5 @@ export default class Torrent {
     return this.client.torrents.map((t: any) => this.torrentState(t));
   }
 }
+
+export const torrent = new Torrent();

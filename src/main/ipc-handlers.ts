@@ -1,8 +1,9 @@
 globalThis.crypto = require("crypto");
 import "dotenv/config";
 import { ipcMain, shell } from "electron";
-import Torrent from "./torrent";
+import { torrent } from "./torrent";
 import MPV from "./mpv";
+import { ExternalPlayers } from "./players";
 import Cast from "./cast";
 import Store from "electron-store";
 import log from "electron-log";
@@ -20,15 +21,15 @@ import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import got from "got";
 
-const cast = new Cast();
-const mpv = new MPV();
-const torrent = new Torrent();
-const store = new Store();
-const opensubtitles = new OpenSubtitles({
+export const externalPlayers = new ExternalPlayers();
+export const mpv = new MPV();
+export const cast = new Cast();
+export const store = new Store();
+export const opensubtitles = new OpenSubtitles({
   apikey: OPENSUBTITLES_API_KEY,
 });
 
-const ipcHandlers = () => {
+export default () => {
   // TORRENT
   ipcMain.handle("torrent-init", (event) => torrent.init(event));
 
@@ -66,12 +67,10 @@ const ipcHandlers = () => {
 
   ipcMain.handle("torrent-destroy-all", () => {
     torrent.destroyAll();
-    mpv.quit();
   });
 
   ipcMain.handle("torrent-destroy", (event, infoHash, ...args) => {
     torrent.destroy(event, infoHash, ...args);
-    mpv.quit();
   });
 
   // FS
@@ -83,54 +82,33 @@ const ipcHandlers = () => {
     return download(url, path);
   });
 
-  // MPV
-  ipcMain.handle("mpv-play", (event, url, options) => {
-    mpv.load(event, url, options);
+  // External players
+  ipcMain.handle("external-players-discover", () => {
+    return externalPlayers.discover();
   });
 
-  ipcMain.handle("mpv-pause", () => {
-    mpv.pause();
+  ipcMain.handle("external-players-list", () => {
+    return externalPlayers.list;
   });
 
-  ipcMain.handle("mpv-resume", () => {
-    mpv.resume();
+  ipcMain.handle("external-players-play", (_, playerId, params) => {
+    return externalPlayers.play(playerId, params);
   });
 
-  ipcMain.handle("mpv-go-to-position", (_, position) => {
-    log.info("go to position", position);
-    mpv.goToPosition(position);
+  ipcMain.handle("external-players-stop", (_, playerId) => {
+    return externalPlayers.stop(playerId);
   });
 
-  ipcMain.handle("mpv-add-subtitles", (_, file, flag, title, lang) => {
-    return mpv.addSubtitles(file, flag, title, lang);
+  ipcMain.handle("external-players-pause", (_, playerId) => {
+    return externalPlayers.pause(playerId);
   });
 
-  ipcMain.handle("mpv-observe-property", (_, property) => {
-    return mpv.observeProperty(property);
+  ipcMain.handle("external-players-resume", (_, playerId) => {
+    return externalPlayers.resume(playerId);
   });
 
-  ipcMain.handle("mpv-unobserve-property", (_, property) => {
-    return mpv.unobserveProperty(property);
-  });
-
-  ipcMain.handle("mpv-get-time-position", () => {
-    return mpv.getTimePosition();
-  });
-
-  ipcMain.handle("mpv-get-percent-position", () => {
-    return mpv.getPercentPosition();
-  });
-
-  ipcMain.handle("mpv-get-property", (_, property) => {
-    return mpv.getProperty(property);
-  });
-
-  ipcMain.handle("mpv-is-running", () => {
-    return mpv.isRunning();
-  });
-
-  ipcMain.handle("mpv-quit", () => {
-    mpv.quit();
+  ipcMain.handle("external-players-status", (_, playerId) => {
+    return externalPlayers.status(playerId);
   });
 
   // CAST
@@ -226,5 +204,3 @@ const ipcHandlers = () => {
     return ip.address();
   });
 };
-
-export default ipcHandlers;
