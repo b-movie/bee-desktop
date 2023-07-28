@@ -2,9 +2,7 @@ globalThis.crypto = require("crypto");
 import "dotenv/config";
 import { ipcMain, shell } from "electron";
 import { torrent } from "./torrent";
-import MPV from "./mpv";
 import { ExternalPlayers } from "./players";
-import Cast from "./cast";
 import Store from "electron-store";
 import log from "electron-log";
 import fs from "fs";
@@ -22,8 +20,6 @@ import { JSDOM } from "jsdom";
 import got from "got";
 
 export const externalPlayers = new ExternalPlayers();
-export const mpv = new MPV();
-export const cast = new Cast();
 export const store = new Store();
 export const opensubtitles = new OpenSubtitles({
   apikey: OPENSUBTITLES_API_KEY,
@@ -92,56 +88,23 @@ export default () => {
   });
 
   ipcMain.handle("external-players-play", (_, playerId, params) => {
-    return externalPlayers.play(playerId, params);
+    externalPlayers.play(playerId, params);
   });
 
   ipcMain.handle("external-players-stop", (_, playerId) => {
-    return externalPlayers.stop(playerId);
+    externalPlayers.stop(playerId);
   });
 
   ipcMain.handle("external-players-pause", (_, playerId) => {
-    return externalPlayers.pause(playerId);
+    externalPlayers.pause(playerId);
   });
 
   ipcMain.handle("external-players-resume", (_, playerId) => {
-    return externalPlayers.resume(playerId);
+    externalPlayers.resume(playerId);
   });
 
   ipcMain.handle("external-players-status", (_, playerId) => {
     return externalPlayers.status(playerId);
-  });
-
-  // CAST
-  ipcMain.handle("cast-init", () => {
-    cast.init();
-  });
-
-  ipcMain.handle("cast-devices", () => {
-    return cast.availableDevices();
-  });
-
-  ipcMain.handle("cast-update", () => {
-    return cast.update();
-  });
-
-  ipcMain.handle("cast-play", (_event, host, media: CastMedia) => {
-    cast.play(host, media);
-  });
-
-  ipcMain.handle("cast-pause", () => {
-    cast.pause();
-  });
-
-  ipcMain.handle("cast-resume", () => {
-    cast.resume();
-  });
-
-  ipcMain.handle("cast-stop", () => {
-    cast.stop();
-  });
-
-  ipcMain.handle("cast-current-status", (_event) => {
-    return cast.currentStatus();
   });
 
   // SHELL

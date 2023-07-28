@@ -3,17 +3,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron";
 
 contextBridge.exposeInMainWorld("__BEE__", {
-  cast: {
-    init: () => ipcRenderer.invoke("cast-init"),
-    update: () => ipcRenderer.invoke("cast-update"),
-    devices: () => ipcRenderer.invoke("cast-devices"),
-    play: (host: string, media: CastMedia) =>
-      ipcRenderer.invoke("cast-play", host, media),
-    pause: () => ipcRenderer.invoke("cast-pause"),
-    resume: () => ipcRenderer.invoke("cast-resume"),
-    stop: () => ipcRenderer.invoke("cast-stop"),
-    currentStatus: () => ipcRenderer.invoke("cast-current-status"),
-  },
   client: {
     platform: "desktop",
     version: require("../package.json").version,

@@ -77,6 +77,7 @@ type CastMedia = {
 
 type PlayerConfig = {
   id: string; // host for cast player, id for external player
+  type: string;
   name: string;
   protocol?: string; // for cast player
   path?: string;

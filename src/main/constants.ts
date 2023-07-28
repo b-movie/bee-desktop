@@ -31,3 +31,59 @@ export const DEFAULT_SETTINGS = {
   subtitlesCacheDir: SUBTITLE_CACHE_DIR,
   trackers: TRACKERS,
 };
+
+export const PLAYER_SEARCH_PATHS: any = {
+  darwin: ["/Applications", process.env.HOME + "/Applications"],
+  linux: [
+    "/usr/bin",
+    "/usr/local/bin",
+    "/snap/bin",
+    "/var/lib/flatpak/app/org.videolan.VLC/current/active", //Fedora Flatpak VLC Dir
+    process.env.HOME + "/.nix-profile/bin", // NixOS
+    "/run/current-system/sw/bin", // NixOS
+  ],
+  win32: [
+    process.env.SystemDrive + "\\Program Files\\",
+    process.env.SystemDrive + "\\Program Files (x86)\\",
+    process.env.LOCALAPPDATA + "\\Apps\\2.0\\",
+  ],
+};
+
+export const MPV_SUB_FILE_PATHS = ["subs", "Subs", "subtitles"];
+export const SUPPORTED_PLAYERS: PlayerConfig[] = [
+  {
+    id: "vlc",
+    type: "vlc",
+    name: "VLC",
+    icon: "https://assets.baizhiheizi.com/vlc-logo.svg",
+    switches: "--no-video-title-show",
+    subswitch: "--sub-file=",
+    fs: "-f",
+    stop: "vlc://quit",
+    pause: "vlc://pause",
+    filenameswitch: "--meta-title=",
+  },
+  {
+    id: "mpv",
+    type: "mpv",
+    name: "mpv",
+    icon: "https://assets.baizhiheizi.com/mpv-logo.svg",
+    switches: `--save-position-on-quit --sub-auto=all --sub-file-paths=${
+      process.platform === "win32"
+        ? MPV_SUB_FILE_PATHS.join(";")
+        : MPV_SUB_FILE_PATHS.join(":")
+    }`,
+    subswitch: "--sub-file=",
+    fs: "--fs",
+    filenameswitch: "--force-media-title=",
+  },
+  {
+    id: "inna",
+    type: "iina",
+    name: "IINA",
+    icon: "https://assets.baizhiheizi.com/iina-logo.png",
+    cmd: "/Contents/MacOS/iina-cli",
+    subswitch: "--mpv-sub-file=",
+    fs: "--mpv-fs",
+  },
+];

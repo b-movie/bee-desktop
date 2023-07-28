@@ -1,113 +1,43 @@
-import { IpcMainInvokeEvent } from "electron";
-import NodeMPV from "node-mpv";
-import log from "electron-log";
-import os from "os";
-import path from "path";
 import GenericPlayer from "./generic-player";
+import log from "electron-log";
+import NodeMPV from "node-mpv";
 
 export default class MPV extends GenericPlayer {
   public mpv: any;
 
   constructor(config: PlayerConfig) {
     super(config);
+    this.init();
   }
 
-  init(event: IpcMainInvokeEvent, options: any = {}, args: string[] = []) {
+  init() {
     if (this.mpv) return this.mpv;
 
-    const platform = os.platform();
-    const subFilePaths = ["subs", "Subs", "subtitles"];
-    const defaultArgs: string[] = [
-      "--sub-auto=all",
-      `--sub-file-paths=${
-        platform === "win32" ? subFilePaths.join(";") : subFilePaths.join(":")
-      }`,
-      "--save-position-on-quit",
-    ];
-
-    // If the user has specified a path to mpv, use that
-    let { binary } = options;
-
-    // If binary is not specified, use the bundled mpv
-    if (!binary) {
-      binary =
-        platform === "win32"
-          ? path.join(__dirname, "libs/mpv/mpv.exe")
-          : path.join(__dirname, "libs/mpv/mpv");
-      defaultArgs.push(
-        `--config-dir=${path.join(__dirname, "libs/mpv/config")}`
-      );
-    }
-
-    options = { ...options, binary: binary };
-    args = [...defaultArgs, ...args];
-
+    const options = { binary: this.config.path };
+    const args = this.config.switches.split(" ");
     this.mpv = new NodeMPV(options, args);
     log.info("MPV init", options, args);
-
-    this.mpv.on("status", (status: any) => {
-      log.info("MPV", status);
-      event.sender.send("mpv-on-status", status);
-    });
-
-    this.mpv.on("started", async () => {
-      this.mpv.observeProperty("sid");
-      event.sender.send("mpv-on-status", {
-        property: "event:started",
-        value: true,
-      });
-    });
-
-    this.mpv.on("stopped", async () => {
-      event.sender.send("mpv-on-status", {
-        property: "event:stopped",
-        value: true,
-      });
-    });
-
-    this.mpv.on("seek", async (position: { start: number; end: number }) => {
-      event.sender.send("mpv-on-seek", position);
-      event.sender.send("mpv-on-status", {
-        property: "event:seek",
-        value: position,
-      });
-    });
-
-    this.mpv.on("timeposition", async (timePosition: number) => {
-      event.sender.send("mpv-on-status", {
-        property: "time-pos",
-        value: timePosition,
-      });
-    });
-
-    this.mpv.on("quit", () => {
-      log.warn("MPV", "quit by user");
-      this.mpv = null;
-      event.sender.send("mpv-on-status", {
-        property: "event:stopped",
-        value: true,
-      });
-    });
   }
 
-  async load(event: IpcMainInvokeEvent, url: string, options: any = {}) {
-    if (!this.mpv) {
-      this.init(event, options);
-    }
+  async play(params: MediaParams) {
+    if (!this.mpv) this.init();
+
+    log.info("MPV", "play", params);
+    const { url, options = {} } = params;
 
     try {
-      await this.mpv.start();
+      if (!this.mpv.isRunning()) {
+        await this.mpv.start();
+      }
+
       log.info("MPV", "load", url);
       await this.mpv.load(url, "replace");
-      if (options.start) {
-        this.mpv.goToPosition(options.start);
+
+      if (options.startTime) {
+        await this.mpv.goToPosition(options.startTime);
       }
     } catch (err) {
       log.error(err);
-      event.sender.send("mpv-on-status", {
-        property: "event:error",
-        value: err,
-      });
     }
   }
 
@@ -119,9 +49,29 @@ export default class MPV extends GenericPlayer {
     this.mpv?.resume();
   }
 
-  async quit() {
-    await this.mpv?.quit();
-    this.mpv = null;
+  stop() {
+    this.mpv?.quit()?.catch((err: any) => {
+      log.error(err);
+    });
+  }
+
+  async status() {
+    if (!this.isRunning()) {
+      return {
+        isRunning: false,
+      };
+    } else {
+      const duration = await this.mpv.getDuration();
+      const timePosition = await this.mpv.getTimePosition();
+      const isPaused = await this.mpv.isPaused();
+
+      return {
+        isRunning: true,
+        isPaused,
+        duration,
+        timePosition,
+      };
+    }
   }
 
   isRunning() {
