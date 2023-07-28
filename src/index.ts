@@ -3,7 +3,7 @@ globalThis.crypto = require("crypto");
 import "dotenv/config";
 import { app, BrowserWindow } from "electron";
 import { torrent } from "./main/torrent";
-import ipcHandlers, { mpv } from "./main/ipc-handlers";
+import ipcHandlers from "./main/ipc-handlers";
 import log from "electron-log";
 import process from "process";
 import path from "path";
@@ -58,7 +58,6 @@ app.on("window-all-closed", async () => {
   log.info("window all closed");
 
   torrent.destroyAll();
-  mpv.quit();
   app.quit();
 });
 
