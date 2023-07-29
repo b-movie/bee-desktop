@@ -11,7 +11,7 @@ import GenericPlayer from "./generic-player";
 import MpvPlayer from "./mpv-player";
 import ChromecastPlayer from "./chromecast-player";
 import DlnaPlayer from "./dlna-player";
-const ChromecastAPI = require("chromecast-api");
+import * as ChromecastAPI from "chromecast-api";
 
 export class ExternalPlayers {
   private chromecast: any;
@@ -42,7 +42,10 @@ export class ExternalPlayers {
         type: "chromecast",
         name: device.friendlyName || device.name,
       };
-      this.players[device.host] = new ChromecastPlayer(player, device);
+
+      if (!this.players[device.host]) {
+        this.players[device.host] = new ChromecastPlayer(player, device);
+      }
 
       if (this.list.findIndex((v) => v.id === device.host) !== -1) return;
       this.list.push(player);
@@ -57,7 +60,10 @@ export class ExternalPlayers {
         name: device.friendlyName || device.name,
       };
 
-      this.players[device.host] = new DlnaPlayer(player, device);
+      if (!this.players[device.host]) {
+        this.players[device.host] = new DlnaPlayer(player, device);
+      }
+
       if (this.list.findIndex((v) => v.id === device.host) !== -1) return;
       this.list.push(player);
     });
@@ -114,7 +120,7 @@ export class ExternalPlayers {
           platform === "win32"
             ? path.join(__dirname, "libs/mpv/mpv.exe")
             : path.join(__dirname, "libs/mpv/mpv"),
-        switches: `--save-position-on-quit --sub-auto=all --sub-file-paths=${
+        switches: `--fs --save-position-on-quit --sub-auto=all --sub-file-paths=${
           process.platform === "win32"
             ? MPV_SUB_FILE_PATHS.join(";")
             : MPV_SUB_FILE_PATHS.join(":")
@@ -157,7 +163,7 @@ export class ExternalPlayers {
     if (!player) return;
 
     const status = await player.status();
-    log.info("status", status);
+    log.info(`${id} player status:`, status);
 
     return status;
   }

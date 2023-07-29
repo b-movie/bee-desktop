@@ -5,6 +5,7 @@ import ip from "ip";
 import { subtitlesServer } from "../subtitles-server";
 
 export default class GenericPlayer {
+  public _status: any = {};
   public config: PlayerConfig;
 
   constructor(config: PlayerConfig) {
@@ -46,12 +47,26 @@ export default class GenericPlayer {
     cmdUrl = `"${this.config.urlswitch ? this.config.urlswitch + url : url}"`;
 
     cmd += cmdPath + cmdSwitch + cmdSub + cmdFs + cmdFilename + cmdUrl;
-    log.info("Launching External Player: " + cmd);
-    exec(cmd, function (error, stdout, stderr) {
-      if (error) log.error(error);
+    const exe = exec(cmd, function (error, stdout, stderr) {
+      if (error) {
+        log.error(error);
+      } else {
+        log.info("Launched External Player: " + cmd);
+      }
 
       log.info(stdout);
       log.error(stderr);
+    });
+
+    this._status = {
+      playerState: "PLAYING",
+    };
+
+    exe.on("exit", (code) => {
+      log.info("External Player exited with code " + code);
+      this._status = {
+        playerState: "STOPPED",
+      };
     });
   }
 
@@ -59,9 +74,13 @@ export default class GenericPlayer {
 
   resume() {}
 
-  stop() {}
+  stop() {
+    this._status = {};
+  }
 
-  status() {}
+  status() {
+    return this._status;
+  }
 
   serveSubtitles(subtitles: any[]) {
     subtitles

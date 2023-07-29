@@ -68,7 +68,7 @@ export const SUPPORTED_PLAYERS: PlayerConfig[] = [
     type: "mpv",
     name: "mpv",
     icon: "https://assets.baizhiheizi.com/mpv-logo.svg",
-    switches: `--save-position-on-quit --sub-auto=all --sub-file-paths=${
+    switches: `--fs --save-position-on-quit --sub-auto=all --sub-file-paths=${
       process.platform === "win32"
         ? MPV_SUB_FILE_PATHS.join(";")
         : MPV_SUB_FILE_PATHS.join(":")

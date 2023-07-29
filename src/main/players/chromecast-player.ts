@@ -59,7 +59,11 @@ export default class ChromecastPlayer extends GenericPlayer {
     this.device.getStatus((err: any, status: any) => {
       if (err) return;
 
-      this._status = status;
+      this._status = {
+        playerState: status?.playerState,
+        currentTime: status?.currentTime,
+        duration: status?.media?.duration,
+      };
       log.debug(
         "chromecast player fetch status:",
         status?.playerState,

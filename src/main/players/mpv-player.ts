@@ -50,7 +50,9 @@ export default class MPV extends GenericPlayer {
   }
 
   stop() {
-    this.mpv?.quit()?.catch((err: any) => {
+    if (!this.isRunning()) return;
+
+    this.mpv.quit().catch((err: any) => {
       log.error(err);
     });
   }
@@ -58,7 +60,7 @@ export default class MPV extends GenericPlayer {
   async status() {
     if (!this.isRunning()) {
       return {
-        isRunning: false,
+        playerState: "STOPPED",
       };
     } else {
       const duration = await this.mpv.getDuration();
@@ -66,10 +68,9 @@ export default class MPV extends GenericPlayer {
       const isPaused = await this.mpv.isPaused();
 
       return {
-        isRunning: true,
-        isPaused,
+        playerState: isPaused ? "PAUSED" : "PLAYING",
         duration,
-        timePosition,
+        currentTime: timePosition,
       };
     }
   }

@@ -60,7 +60,11 @@ export default class DlnaPlayer extends GenericPlayer {
     this.device.status((err: any, status: any) => {
       if (err) return;
       log.debug("dlna player fetch status:", status);
-      this._status = status;
+      this._status = {
+        playerState: status?.playerState,
+        currentTime: status?.currentTime,
+        duration: status?.media?.duration,
+      };
     });
   }
 }
