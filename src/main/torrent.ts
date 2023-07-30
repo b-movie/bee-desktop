@@ -1,5 +1,5 @@
 import { IpcMainInvokeEvent } from "electron";
-import { TRACKERS, CACHE_DIR } from "./constants";
+import { TRACKERS, DEFAULT_CACHE_DIR } from "./constants";
 import { generatePortNumber } from "./helpers";
 import WebTorrent from "webtorrent";
 import log from "electron-log";
@@ -65,7 +65,7 @@ export default class Torrent {
       this.client.add(
         magnetURI || infoHash,
         {
-          path: CACHE_DIR,
+          path: DEFAULT_CACHE_DIR,
           announce: TRACKERS,
           maxConns: 10,
           dht: { concurrency: 16 },

@@ -1,14 +1,19 @@
 import http from "http";
 import path from "path";
 import fs from "fs";
-import { SUBTITLE_CACHE_DIR } from "./constants";
+import { DEFAULT_CACHE_DIR } from "./constants";
 import { generatePortNumber } from "./helpers";
 import finalhandler from "finalhandler";
 import serveStatic from "serve-static";
 import log from "electron-log";
 import { srt2webvtt, httpGet } from "./helpers";
 import { createHash } from "crypto";
+import settings from "electron-settings";
 
+const SUBTITLE_CACHE_DIR = path.join(
+  (settings.getSync("cacheDir") as string) || DEFAULT_CACHE_DIR,
+  "SubtitlesCache"
+);
 export default class SubtitlesServer {
   public server: any;
 

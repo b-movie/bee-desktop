@@ -35,7 +35,8 @@ contextBridge.exposeInMainWorld("__BEE__", {
     download: (id: string) => ipcRenderer.invoke("opensubtitles-download", id),
   },
   settings: {
-    refresh: () => ipcRenderer.invoke("settings-refresh"),
+    all: () => ipcRenderer.invoke("settings-all"),
+    reset: () => ipcRenderer.invoke("settings-reset"),
     get: (key: string) => ipcRenderer.invoke("settings-get", key),
     set: (key: string, value: any) =>
       ipcRenderer.invoke("settings-set", key, value),
@@ -44,9 +45,6 @@ contextBridge.exposeInMainWorld("__BEE__", {
     openExternal: (url: string) =>
       ipcRenderer.invoke("shell-open-external", url),
     openPath: (path: string) => ipcRenderer.invoke("shell-open-path", path),
-  },
-  store: {
-    get: (key: string) => ipcRenderer.invoke("store-get", key),
   },
   torrent: {
     init: () => ipcRenderer.invoke("torrent-init"),
