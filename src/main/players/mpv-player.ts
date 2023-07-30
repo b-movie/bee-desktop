@@ -1,6 +1,7 @@
 import GenericPlayer from "./generic-player";
 import log from "electron-log";
 import NodeMPV from "node-mpv";
+import ip from "ip";
 
 export default class MPV extends GenericPlayer {
   public mpv: any;
@@ -23,15 +24,23 @@ export default class MPV extends GenericPlayer {
     if (!this.mpv) this.init();
 
     log.info("MPV", "play", params);
-    const { url, options = {} } = params;
+    const { url, options = {}, subtitles = [] } = params;
 
     try {
       if (!this.mpv.isRunning()) {
         await this.mpv.start();
       }
 
-      log.info("MPV", "load", url);
-      await this.mpv.load(url, "replace");
+      const args = [];
+      if (options.startTime) {
+        args.push(`--start=${options.startTime}`);
+      }
+      if (subtitles.length > 0) {
+        const subFile = subtitles[0].url.replace("localhost", ip.address());
+        args.push(`--sub-file=${subFile}`);
+      }
+      log.info("MPV", "load", url, args);
+      await this.mpv.load(url, "replace", ...args);
 
       if (options.startTime) {
         await this.mpv.goToPosition(options.startTime);
@@ -63,15 +72,22 @@ export default class MPV extends GenericPlayer {
         playerState: "STOPPED",
       };
     } else {
-      const duration = await this.mpv.getDuration();
-      const timePosition = await this.mpv.getTimePosition();
       const isPaused = await this.mpv.isPaused();
+      try {
+        const duration = await this.mpv.getDuration();
+        const timePosition = await this.mpv.getTimePosition();
 
-      return {
-        playerState: isPaused ? "PAUSED" : "PLAYING",
-        duration,
-        currentTime: timePosition,
-      };
+        return {
+          playerState: isPaused ? "PAUSED" : "PLAYING",
+          duration,
+          currentTime: timePosition,
+        };
+      } catch (err) {
+        log.error(err);
+        return {
+          playerState: isPaused ? "PAUSED" : "PLAYING",
+        };
+      }
     }
   }
 

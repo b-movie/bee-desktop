@@ -11,7 +11,7 @@ import GenericPlayer from "./generic-player";
 import MpvPlayer from "./mpv-player";
 import ChromecastPlayer from "./chromecast-player";
 import DlnaPlayer from "./dlna-player";
-import * as ChromecastAPI from "chromecast-api";
+import ChromecastAPI from "chromecast-api";
 
 export class ExternalPlayers {
   private chromecast: any;

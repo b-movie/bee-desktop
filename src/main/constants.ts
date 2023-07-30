@@ -55,9 +55,9 @@ export const SUPPORTED_PLAYERS: PlayerConfig[] = [
     id: "vlc",
     type: "vlc",
     name: "VLC",
-    icon: "https://assets.baizhiheizi.com/vlc-logo.svg",
     switches: "--no-video-title-show",
     subswitch: "--sub-file=",
+    startswitch: "--start-time=",
     fs: "-f",
     stop: "vlc://quit",
     pause: "vlc://pause",
@@ -66,8 +66,7 @@ export const SUPPORTED_PLAYERS: PlayerConfig[] = [
   {
     id: "mpv",
     type: "mpv",
-    name: "mpv",
-    icon: "https://assets.baizhiheizi.com/mpv-logo.svg",
+    name: "MPV",
     switches: `--fs --save-position-on-quit --sub-auto=all --sub-file-paths=${
       process.platform === "win32"
         ? MPV_SUB_FILE_PATHS.join(";")
@@ -81,7 +80,6 @@ export const SUPPORTED_PLAYERS: PlayerConfig[] = [
     id: "inna",
     type: "iina",
     name: "IINA",
-    icon: "https://assets.baizhiheizi.com/iina-logo.png",
     cmd: "/Contents/MacOS/iina-cli",
     subswitch: "--mpv-sub-file=",
     fs: "--mpv-fs",

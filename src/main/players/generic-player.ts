@@ -13,7 +13,7 @@ export default class GenericPlayer {
   }
 
   play(params: MediaParams) {
-    const { url, subtitles = [], title = "" } = params;
+    const { url, subtitles = [], title = "", options = {} } = params;
     if (!url) return;
 
     let cmd = "";
@@ -31,9 +31,13 @@ export default class GenericPlayer {
 
     cmdSwitch += this.config.switches + " ";
 
-    const subtitle = subtitles[0]?.url || "";
-    if (subtitle) {
+    let subtitle = subtitles[0]?.url || "";
+    if (subtitle && this.config.subswitch) {
+      subtitle = subtitle.replace("localhost", ip.address());
       cmdSub += this.config.subswitch + '"' + subtitle + '" ';
+    }
+    if (options.startTime && this.config.startswitch) {
+      cmdSub += this.config.startswitch + options.startTime + " ";
     }
     if (this.config.fs) {
       cmdFs += this.config.fs + " ";

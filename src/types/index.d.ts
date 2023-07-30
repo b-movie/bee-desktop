@@ -60,13 +60,12 @@ type TorrentFile = {
 
 type PlayerConfig = {
   id: string; // host for cast player, id for external player
-  type: string;
+  type: string; // protocol for casting
   name: string;
-  protocol?: string; // for cast player
   path?: string;
-  icon?: string;
   cmd?: string;
   switches?: string;
+  startswitch?: string;
   subswitch?: string;
   urlswitch?: string;
   fs?: string;
@@ -91,4 +90,3 @@ type MediaParams = {
     startTime?: number;
   };
 };
-
