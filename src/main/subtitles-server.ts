@@ -64,3 +64,5 @@ export default class SubtitlesServer {
     return url;
   }
 }
+
+export const subtitlesServer = new SubtitlesServer();

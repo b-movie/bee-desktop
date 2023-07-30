@@ -153,7 +153,7 @@ export default class Torrent {
     // Select file with provided index
     for (let i = 0; i < torrent.files.length; i++) {
       const file = torrent.files[i];
-      if (i == fileIdx) {
+      if (i == fileIdx || file.name.match(/\.(srt|ass|vtt)$/)) {
         file.select();
         log.debug("selecting file " + i + " of torrent: " + file.name);
       } else {
@@ -230,3 +230,5 @@ export default class Torrent {
     return this.client.torrents.map((t: any) => this.torrentState(t));
   }
 }
+
+export const torrent = new Torrent();

@@ -58,9 +58,25 @@ type TorrentFile = {
   streamUrl: string;
 };
 
-type CastMedia = {
+type PlayerConfig = {
+  id: string; // host for cast player, id for external player
+  type: string; // protocol for casting
+  name: string;
+  path?: string;
+  cmd?: string;
+  switches?: string;
+  startswitch?: string;
+  subswitch?: string;
+  urlswitch?: string;
+  fs?: string;
+  stop?: string;
+  pause?: string;
+  filenameswitch?: string;
+};
+
+type MediaParams = {
   url: string;
-  title: string;
+  title?: string;
   cover?: {
     title?: string;
     url: string;
