@@ -112,7 +112,7 @@ export class ExternalPlayers {
 
     // Add bundled MPV if not found
     if (this.list.findIndex((v) => v.id === "mpv") === -1) {
-      this.list.push({
+      const mpvPlayer = {
         id: "mpv",
         type: "mpv",
         name: "MPV",
@@ -125,7 +125,9 @@ export class ExternalPlayers {
             ? MPV_SUB_FILE_PATHS.join(";")
             : MPV_SUB_FILE_PATHS.join(":")
         } --config-dir=${path.join(__dirname, "libs/mpv/config")}`,
-      });
+      };
+      this.list.push(mpvPlayer);
+      this.players.mpv = new MpvPlayer(mpvPlayer);
     }
   }
 
