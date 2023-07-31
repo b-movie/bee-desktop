@@ -29,7 +29,6 @@ main.init = (): void => {
     width: 1920,
     minWidth: 1280,
     minHeight: 720,
-    titleBarStyle: "hiddenInset", // Hide title bar (Mac)
     useContentSize: true, // Specify web page size without OS chrome
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
