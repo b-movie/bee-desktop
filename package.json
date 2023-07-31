@@ -1,8 +1,8 @@
 {
   "name": "bee-desktop",
   "productName": "BEE",
-  "version": "0.5.1",
-  "description": "A desktop client for Bee",
+  "version": "0.6.0",
+  "description": "A desktop client for BEE",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
