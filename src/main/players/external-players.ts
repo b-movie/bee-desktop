@@ -168,3 +168,5 @@ export class ExternalPlayers {
     return status;
   }
 }
+
+export const externalPlayers = new ExternalPlayers();

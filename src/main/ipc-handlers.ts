@@ -1,26 +1,19 @@
 globalThis.crypto = require("crypto");
 import "dotenv/config";
-import { ipcMain, shell } from "electron";
+import { BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { torrent } from "./torrent";
-import { ExternalPlayers } from "./players";
-import Store from "electron-store";
+import { externalPlayers } from "./players";
 import log from "electron-log";
 import fs from "fs";
 import OpenSubtitles from "opensubtitles.com";
-import {
-  OPENSUBTITLES_API_KEY,
-  CACHE_DIR,
-  SUBTITLE_CACHE_DIR,
-  TRACKERS,
-} from "./constants";
+import { OPENSUBTITLES_API_KEY } from "./constants";
 import { download } from "./helpers";
 import ip from "ip";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import got from "got";
+import settings from "./settings";
 
-export const externalPlayers = new ExternalPlayers();
-export const store = new Store();
 export const opensubtitles = new OpenSubtitles({
   apikey: OPENSUBTITLES_API_KEY,
 });
@@ -116,11 +109,6 @@ export default () => {
     shell.openPath(path);
   });
 
-  // STORE
-  ipcMain.handle("store-get", (_event, key) => {
-    return store.get(key);
-  });
-
   // OPENSUBTITLES
   ipcMain.handle("opensubtitles-login", (_event, username, password) => {
     return opensubtitles.login({ username, password });
@@ -154,16 +142,50 @@ export default () => {
   });
 
   // SETTINGS
-  ipcMain.handle("settings-refresh", () => {
-    return {
-      cacheDir: CACHE_DIR,
-      subtitlesCacheDir: SUBTITLE_CACHE_DIR,
-      trackers: TRACKERS,
-    };
+  ipcMain.handle("settings-all", () => {
+    return settings.getSync();
+  });
+
+  ipcMain.handle("settings-get", (_event, key) => {
+    return settings.getSync(key);
+  });
+
+  ipcMain.handle("settings-set", (_event, key, value) => {
+    settings.setSync(key, value);
+  });
+
+  ipcMain.handle("settings-reset", () => {
+    (settings as any).resetToDefaults();
   });
 
   // CLIENT
   ipcMain.handle("client-ip", () => {
     return ip.address();
+  });
+
+  // Dialog
+  ipcMain.handle("dialog-show-open-dialog", (event, options) => {
+    return dialog.showOpenDialogSync(
+      BrowserWindow.fromWebContents(event.sender),
+      options
+    );
+  });
+
+  ipcMain.handle("dialog-show-save-dialog", (event, options) => {
+    return dialog.showSaveDialogSync(
+      BrowserWindow.fromWebContents(event.sender),
+      options
+    );
+  });
+
+  ipcMain.handle("dialog-show-message-box", (event, options) => {
+    return dialog.showMessageBoxSync(
+      BrowserWindow.fromWebContents(event.sender),
+      options
+    );
+  });
+
+  ipcMain.handle("dialog-show-error-box", (_event, title, content) => {
+    return dialog.showErrorBox(title, content);
   });
 };

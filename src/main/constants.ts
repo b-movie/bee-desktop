@@ -2,8 +2,7 @@ import os from "os";
 import path from "path";
 
 export const OPENSUBTITLES_API_KEY = "6odoYlui4gEXjCYZyAB8tUxSDpDlfAMw";
-export const CACHE_DIR = path.join(os.tmpdir(), "BEE");
-export const SUBTITLE_CACHE_DIR = path.join(CACHE_DIR, "SubtitlesCache");
+export const DEFAULT_CACHE_DIR = path.join(os.tmpdir(), "BEE");
 export const TRACKERS = [
   "udp://tracker.opentrackr.org:1337/announce",
   "udp://opentracker.i2p.rocks:6969/announce",
@@ -26,11 +25,6 @@ export const TRACKERS = [
   "https://tr.burnabyhighstar.com:443/announce",
   "http://open.acgnxtracker.com:80/announce",
 ];
-export const DEFAULT_SETTINGS = {
-  cacheDir: CACHE_DIR,
-  subtitlesCacheDir: SUBTITLE_CACHE_DIR,
-  trackers: TRACKERS,
-};
 
 export const PLAYER_SEARCH_PATHS: any = {
   darwin: ["/Applications", process.env.HOME + "/Applications"],

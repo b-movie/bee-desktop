@@ -58,9 +58,9 @@ main.init = (): void => {
     main.win.reload();
   });
 
-  globalShortcut.register("CommandOrControl+R", () => {
-    main.win.reload();
-  });
+  // globalShortcut.register("CommandOrControl+R", () => {
+  //   main.win.reload();
+  // });
 
   main.win.webContents.setWindowOpenHandler(({ url }) => {
     if (new URL(url).origin === WEBAPP_URL) {
