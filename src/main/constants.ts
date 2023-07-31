@@ -71,7 +71,7 @@ export const SUPPORTED_PLAYERS: PlayerConfig[] = [
     filenameswitch: "--force-media-title=",
   },
   {
-    id: "inna",
+    id: "iina",
     type: "iina",
     name: "IINA",
     cmd: "/Contents/MacOS/iina-cli",
