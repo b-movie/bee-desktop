@@ -1,16 +1,12 @@
 globalThis.crypto = require("crypto");
 import "dotenv/config";
-import { ipcMain, shell } from "electron";
+import { BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { torrent } from "./torrent";
-import { ExternalPlayers, externalPlayers } from "./players";
+import { externalPlayers } from "./players";
 import log from "electron-log";
 import fs from "fs";
 import OpenSubtitles from "opensubtitles.com";
-import {
-  OPENSUBTITLES_API_KEY,
-  DEFAULT_CACHE_DIR,
-  TRACKERS,
-} from "./constants";
+import { OPENSUBTITLES_API_KEY } from "./constants";
 import { download } from "./helpers";
 import ip from "ip";
 import { Readability } from "@mozilla/readability";
@@ -155,7 +151,7 @@ export default () => {
   });
 
   ipcMain.handle("settings-set", (_event, key, value) => {
-    settings.set(key, value);
+    settings.setSync(key, value);
   });
 
   ipcMain.handle("settings-reset", () => {
@@ -165,5 +161,31 @@ export default () => {
   // CLIENT
   ipcMain.handle("client-ip", () => {
     return ip.address();
+  });
+
+  // Dialog
+  ipcMain.handle("dialog-show-open-dialog", (event, options) => {
+    return dialog.showOpenDialogSync(
+      BrowserWindow.fromWebContents(event.sender),
+      options
+    );
+  });
+
+  ipcMain.handle("dialog-show-save-dialog", (event, options) => {
+    return dialog.showSaveDialogSync(
+      BrowserWindow.fromWebContents(event.sender),
+      options
+    );
+  });
+
+  ipcMain.handle("dialog-show-message-box", (event, options) => {
+    return dialog.showMessageBoxSync(
+      BrowserWindow.fromWebContents(event.sender),
+      options
+    );
+  });
+
+  ipcMain.handle("dialog-show-error-box", (_event, title, content) => {
+    return dialog.showErrorBox(title, content);
   });
 };

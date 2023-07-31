@@ -1,26 +1,21 @@
 import settings from "electron-settings";
-import path from "path";
+import fs from "fs";
 import { DEFAULT_CACHE_DIR, TRACKERS } from "./constants";
 
 if (!settings.hasSync("cacheDir")) {
   settings.setSync("cacheDir", DEFAULT_CACHE_DIR);
 }
-if (!settings.hasSync("subtitlesCacheDir")) {
-  settings.setSync(
-    "subtitlesCacheDir",
-    path.join(DEFAULT_CACHE_DIR, "SubtitlesCache")
-  );
-}
 if (!settings.hasSync("trackers")) {
   settings.setSync("trackers", TRACKERS);
 }
 
+const cacheDir: string = settings.getSync("cacheDir") as string;
+if (!fs.existsSync(cacheDir)) {
+  fs.mkdirSync(cacheDir);
+}
+
 (settings as any).resetToDefaults = () => {
   settings.setSync("cacheDir", DEFAULT_CACHE_DIR);
-  settings.setSync(
-    "subtitlesCacheDir",
-    path.join(DEFAULT_CACHE_DIR, "SubtitlesCache")
-  );
   settings.setSync("trackers", TRACKERS);
 };
 

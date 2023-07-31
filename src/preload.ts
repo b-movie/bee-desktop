@@ -8,6 +8,16 @@ contextBridge.exposeInMainWorld("__BEE__", {
     version: require("../package.json").version,
     ip: () => ipcRenderer.invoke("client-ip"),
   },
+  dialog: {
+    showOpenDialog: (options: any) =>
+      ipcRenderer.invoke("dialog-show-open-dialog", options),
+    showSaveDialog: (options: any) =>
+      ipcRenderer.invoke("dialog-show-save-dialog", options),
+    showMessageBox: (options: any) =>
+      ipcRenderer.invoke("dialog-show-message-box", options),
+    showErrorBox: (title: string, content: string) =>
+      ipcRenderer.invoke("dialog-show-error-box", title, content),
+  },
   externalPlayers: {
     discover: () => ipcRenderer.invoke("external-players-discover"),
     list: () => ipcRenderer.invoke("external-players-list"),
